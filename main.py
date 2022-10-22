@@ -1,10 +1,9 @@
 import sys
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QHBoxLayout, QScrollArea, QGroupBox
-from PyQt5.QtWidgets import QLabel, QWidget, QFileDialog, QCheckBox
+from PyQt5.QtWidgets import QLabel, QWidget, QFileDialog, QCheckBox, QDialog
 import wikipedia
 import warnings
-import json
 from PyQt5.QtGui import QPixmap
 
 
@@ -12,13 +11,11 @@ warnings.catch_warnings()
 warnings.simplefilter("ignore")
 
 
-class MyWidget(QMainWindow):
+class UserInterface(QMainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('UI.ui', self)
+        uic.loadUi('UIs/User.ui', self)
         self.wikiGet.clicked.connect(self.wiki)
-        f = open('images.json', encoding='utf-8')
-        y = json.load(f)
         wikipedia.set_lang('ru')
         #label = QLabel()
         #label1 = QLabel()
@@ -84,14 +81,41 @@ class MyWidget(QMainWindow):
 class ReadWindow(QWidget): # окно для открытия книги
     def __init__(self):
         super().__init__() # TODO: переделать открытие файла
-        uic.loadUi('TEXT.ui', self)
+        uic.loadUi('UIs/TEXT.ui', self)
         pass
+
+
+class AdminOrUser(QDialog): # выбор админки или юзера
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('UIs/AdminOrUser.ui', self)
+        self.user_btn.clicked.connect(self.open_user)
+        self.admin_btn.clicked.connect(self.open_admin)
+
+    def open_user(self):
+        self.w = UserInterface()
+        self.w.show()
+        self.close()
+
+    def open_admin(self):
+        self.w = AdminCheck()
+        self.w.show()
+
+
+class AdminCheck(QDialog): # проверка на разрешение
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('UIs/AdminCheck.ui', self)
+        self.check_btn.clicked.connect(self.check)
+
+    def check(self):
+        self.Error_lbl.setText(self.loginEdit.text() + self.passEdit.text())
 
 
 class WriteWindow(QWidget): # окно для редактирования текста
     def __init__(self):
         super().__init__()
-        uic.loadUi('WRITE.ui', self)
+        uic.loadUi('UIs/WRITE.ui', self)
         self.opening.clicked.connect(self.to_openFile)
         self.clear.clicked.connect(self.to_clearFile)
         self.save.clicked.connect(self.to_saveFile)
@@ -111,8 +135,9 @@ class WriteWindow(QWidget): # окно для редактирования те�
         writing.write(self.textEdit.toPlainText())
         writing.close()
 
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = MyWidget()
+    ex = AdminOrUser()
     ex.show()
     sys.exit(app.exec_())
