@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QLabel, QWidget, QFileDialog, QCheckBox, QDialog
 import wikipedia
 import warnings
 from PyQt5.QtGui import QPixmap
+import sqlite3
 
 
 warnings.catch_warnings()
@@ -109,7 +110,21 @@ class AdminCheck(QDialog): # проверка на разрешение
         self.check_btn.clicked.connect(self.check)
 
     def check(self):
-        self.Error_lbl.setText(self.loginEdit.text() + self.passEdit.text())
+        login = self.loginEdit.text()
+        password = self.passEdit.text()
+        con = sqlite3.connect("DBs/Admins_db.sqlite")
+        cur = con.cursor()
+        result = cur.execute("""SELECT * FROM Admins
+                    WHERE login = ?""", (login,)).fetchone()
+        try:
+            assert result
+            assert result[1] == password
+            print('ok') # TODO: здесь сделать открытие Admin интерфейса
+            self.close()
+        except AssertionError:
+            self.Error_lbl.setText('Логин или пароль некорректны.\nПовторите попытку')
+            self.loginEdit.clear()
+            self.passEdit.clear()
 
 
 class WriteWindow(QWidget): # окно для редактирования текста

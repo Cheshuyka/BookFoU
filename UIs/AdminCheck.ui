@@ -109,12 +109,12 @@
      <x>530</x>
      <y>130</y>
      <width>491</width>
-     <height>51</height>
+     <height>71</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>14</pointsize>
+     <pointsize>10</pointsize>
     </font>
    </property>
    <property name="text">
