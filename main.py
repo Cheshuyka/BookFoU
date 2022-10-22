@@ -12,7 +12,7 @@ warnings.catch_warnings()
 warnings.simplefilter("ignore")
 
 
-class UserInterface(QMainWindow):
+class UserInterface(QMainWindow): # интерфейс пользователя
     def __init__(self):
         super().__init__()
         uic.loadUi('UIs/User.ui', self)
