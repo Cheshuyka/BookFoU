@@ -18,40 +18,46 @@ class UserInterface(QMainWindow): # интерфейс пользователя
         uic.loadUi('UIs/User.ui', self)
         self.wikiGet.clicked.connect(self.wiki)
         wikipedia.set_lang('ru')
-        #label = QLabel()
-        #im = QPixmap(y['спать хочется'])
-        #label.setPixmap(im)
-        self.scroll = QScrollArea()
 
         self.group = QGroupBox()
-        self.group1 = QGroupBox()
-        self.filter = QGroupBox()
-
         self.h = QVBoxLayout()
-
-        self.h.addWidget(self.group1)
-
         self.group.setLayout(self.h)
-        self.scroll.setWidget(self.group)
-        self.horizontalLayout.addWidget(self.scroll)
-        # v = QVBoxLayout()
-        # v.addWidget(label)
-        # v.addWidget(QLabel('Спать хочется'))
-        # v.addWidget(QLabel('А.П.Чехов'))
-        # btn = QPushButton('Подробнее')
-        # btn.clicked.connect(self.to_open)
-        # self.v.addWidget(btn)
-        # self.group1.setLayout(self.v)
+        self.scrollArea.setWidget(self.group)
 
         self.toEditBtn.clicked.connect(self.to_write)
         self.find_btn.clicked.connect(self.findBooks)
 
+        self.findBooks()
+
     def findBooks(self):
+        name = self.nameEdit.text()
+        author = self.authorEdit.text()
+        if name and author:
+            wheres = f"WHERE name LIKE '%{name}%' AND author LIKE '%{author}%'"
+        elif name:
+            wheres = f"WHERE name LIKE '%{name}%'"
+        elif author:
+            wheres = f"WHERE author LIKE '%{author}%'"
+        else:
+            wheres = ''
         con = sqlite3.connect("DBs/Books_db.sqlite")
         cur = con.cursor()
-        result = cur.execute("""SELECT * FROM Books""").fetchall()
+        result = cur.execute(f"""SELECT * FROM Books
+                    {wheres}""").fetchall()
         con.close()
-        print(result)
+        for book in result:
+            group1 = QGroupBox()
+            label = QLabel()
+            im = QPixmap(book[3])
+            label.setPixmap(im)
+            v = QVBoxLayout()
+            v.addWidget(label)
+            v.addWidget(QLabel(book[0]))
+            v.addWidget(QLabel(book[1]))
+            btn = QPushButton('Подробнее')
+            v.addWidget(btn)
+            group1.setLayout(v)
+            self.h.addWidget(group1)
 
     def wiki(self): # вывод определения слова
         try:
