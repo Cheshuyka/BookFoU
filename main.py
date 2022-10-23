@@ -47,7 +47,7 @@ class UserInterface(QMainWindow): # интерфейс пользователя
         self.find_btn.clicked.connect(self.findBooks)
 
     def findBooks(self):
-        con = sqlite3.connect("DBs/Books_db.sqlite.sqlite")
+        con = sqlite3.connect("DBs/Books_db.sqlite")
         cur = con.cursor()
         result = cur.execute("""SELECT * FROM Books""").fetchall()
         con.close()
