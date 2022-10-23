@@ -109,7 +109,8 @@ class AdminCheck(QDialog): # проверка на разрешение
         uic.loadUi('UIs/AdminCheck.ui', self)
         self.check_btn.clicked.connect(self.check)
 
-    def check(self):
+    def check(self): # для проверки работы админского интерфейса в логине введите test1, а в пароле 321
+        # для проверки работы админского интерфейса со званием super, в логине введите test, а в пароле 123
         login = self.loginEdit.text()
         password = self.passEdit.text()
         con = sqlite3.connect("DBs/Admins_db.sqlite")
