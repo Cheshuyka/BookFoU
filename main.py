@@ -19,14 +19,8 @@ class UserInterface(QMainWindow): # интерфейс пользователя
         self.wikiGet.clicked.connect(self.wiki)
         wikipedia.set_lang('ru')
         #label = QLabel()
-        #label1 = QLabel()
-        #label2 = QLabel()
         #im = QPixmap(y['спать хочется'])
-        #im1 = QPixmap(y['идиот'])
-        #im2 = QPixmap(y['преступление и наказание'])
         #label.setPixmap(im)
-        #label1.setPixmap(im1)
-        #label2.setPixmap(im2)
         self.scroll = QScrollArea()
 
         self.group = QGroupBox()
@@ -40,25 +34,24 @@ class UserInterface(QMainWindow): # интерфейс пользователя
         self.group.setLayout(self.h)
         self.scroll.setWidget(self.group)
         self.horizontalLayout.addWidget(self.scroll)
-        # self.v = QVBoxLayout()
-        # self.v1 = QVBoxLayout()
-        # self.v2 = QVBoxLayout()
-        # self.v.addWidget(label)
-        # self.v.addWidget(QLabel('Спать Хочется'))
-        # self.v.addWidget(QLabel('А.П.Чехов'))
+        # v = QVBoxLayout()
+        # v.addWidget(label)
+        # v.addWidget(QLabel('Спать хочется'))
+        # v.addWidget(QLabel('А.П.Чехов'))
         # btn = QPushButton('Подробнее')
         # btn.clicked.connect(self.to_open)
         # self.v.addWidget(btn)
-        # self.v1.addWidget(label1)
-        # self.v2.addWidget(label2)
         # self.group1.setLayout(self.v)
-        # self.group2.setLayout(self.v1)
-        # self.group3.setLayout(self.v2)
-
-        #self.group1.setLayout(self.v)
-        #self.group2.setLayout(self.v1)
 
         self.toEditBtn.clicked.connect(self.to_write)
+        self.find_btn.clicked.connect(self.findBooks)
+
+    def findBooks(self):
+        con = sqlite3.connect("DBs/Books_db.sqlite.sqlite")
+        cur = con.cursor()
+        result = cur.execute("""SELECT * FROM Books""").fetchall()
+        con.close()
+        print(result)
 
     def wiki(self): # вывод определения слова
         try:
@@ -74,9 +67,6 @@ class UserInterface(QMainWindow): # интерфейс пользователя
     def to_write(self): # открытие окна для редактирования файла
         self.write = WriteWindow()
         self.write.show()
-
-    def show_books(self): # вывод книг в соответствии с выбранными фильтрами
-        pass
 
 
 class ReadWindow(QWidget): # окно для открытия книги
@@ -117,6 +107,7 @@ class AdminCheck(QDialog): # проверка на разрешение
         cur = con.cursor()
         result = cur.execute("""SELECT * FROM Admins
                     WHERE login = ?""", (login,)).fetchone()
+        con.close()
         try:
             assert result
             assert result[1] == password
