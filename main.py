@@ -12,7 +12,7 @@ warnings.catch_warnings()
 warnings.simplefilter("ignore")
 
 
-class UserInterface(QMainWindow): # интерфейс пользователя
+class UserInterface(QMainWindow):  # интерфейс пользователя
     def __init__(self):
         super().__init__()
         uic.loadUi('UIs/User.ui', self)
@@ -61,30 +61,30 @@ class UserInterface(QMainWindow): # интерфейс пользователя
             group1.setLayout(v)
             self.h.addWidget(group1)
 
-    def wiki(self): # вывод определения слова
+    def wiki(self):  # вывод определения слова
         try:
-            word = self.wikiLine.text() # получение слова
-            self.wikiText.setText(str(wikipedia.summary(word).split('\n')[0])) # вывод определения
-        except Exception: # если слово не найдено или поле пусто
+            word = self.wikiLine.text()  # получение слова
+            self.wikiText.setText(str(wikipedia.summary(word).split('\n')[0]))  # вывод определения
+        except Exception:  # если слово не найдено или поле пусто
             self.wikiText.setText('определение слова не найдено')
 
-    def to_openBook(self): # открытие книги в отдельном окне
+    def to_openBook(self):  # открытие книги в отдельном окне
         self.w = ReadWindow()
         self.w.show()
 
-    def to_write(self): # открытие окна для редактирования файла
+    def to_write(self):  # открытие окна для редактирования файла
         self.write = WriteWindow()
         self.write.show()
 
 
-class ReadWindow(QWidget): # окно для открытия книги
+class ReadWindow(QWidget):  # окно для открытия книги
     def __init__(self):
-        super().__init__() # TODO: переделать открытие файла
+        super().__init__()  # TODO: переделать открытие файла
         uic.loadUi('UIs/TEXT.ui', self)
         pass
 
 
-class AdminOrUser(QDialog): # выбор админки или юзера
+class AdminOrUser(QDialog):  # выбор админки или юзера
     def __init__(self):
         super().__init__()
         uic.loadUi('UIs/AdminOrUser.ui', self)
@@ -101,13 +101,13 @@ class AdminOrUser(QDialog): # выбор админки или юзера
         self.w.show()
 
 
-class AdminCheck(QDialog): # проверка на разрешение
+class AdminCheck(QDialog):  # проверка на разрешение
     def __init__(self):
         super().__init__()
         uic.loadUi('UIs/AdminCheck.ui', self)
         self.check_btn.clicked.connect(self.check)
 
-    def check(self): # для проверки работы админского интерфейса в логине введите test1, а в пароле 321
+    def check(self):  # для проверки работы админского интерфейса в логине введите test1, а в пароле 321
         # для проверки работы админского интерфейса со званием super, в логине введите test, а в пароле 123
         login = self.loginEdit.text()
         password = self.passEdit.text()
@@ -119,7 +119,7 @@ class AdminCheck(QDialog): # проверка на разрешение
         try:
             assert result
             assert result[1] == password
-            print('ok') # TODO: здесь сделать открытие Admin интерфейса
+            print('ok')  # TODO: здесь сделать открытие Admin интерфейса
             self.close()
         except AssertionError:
             self.Error_lbl.setText('Логин или пароль некорректны.\nПовторите попытку')
@@ -127,7 +127,7 @@ class AdminCheck(QDialog): # проверка на разрешение
             self.passEdit.clear()
 
 
-class WriteWindow(QWidget): # окно для редактирования текста
+class WriteWindow(QWidget):  # окно для редактирования текста
     def __init__(self):
         super().__init__()
         uic.loadUi('UIs/WRITE.ui', self)
@@ -135,16 +135,16 @@ class WriteWindow(QWidget): # окно для редактирования те�
         self.clear.clicked.connect(self.to_clearFile)
         self.save.clicked.connect(self.to_saveFile)
 
-    def to_openFile(self): # открытие файла
+    def to_openFile(self):  # открытие файла
         fname = QFileDialog.getOpenFileName(self, 'Выбрать текст', '')[0]
         writing = open(fname, mode='rt', encoding='utf-8')
         self.textEdit.setPlainText(writing.read())
         writing.close()
 
-    def to_clearFile(self): # очистка поля ввода
+    def to_clearFile(self):  # очистка поля ввода
         self.textEdit.clear()
 
-    def to_saveFile(self): # сохранение файла
+    def to_saveFile(self):  # сохранение файла
         fname = QFileDialog.getSaveFileName(self, 'Сохраняем', '')[0]
         writing = open(fname, mode='w', encoding='utf-8')
         writing.write(self.textEdit.toPlainText())
