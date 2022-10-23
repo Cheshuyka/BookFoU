@@ -45,6 +45,8 @@ class UserInterface(QMainWindow): # интерфейс пользователя
         result = cur.execute(f"""SELECT * FROM Books
                     {wheres}""").fetchall()
         con.close()
+        for i in reversed(range(self.h.count())):
+            self.h.itemAt(i).widget().setParent(None)
         for book in result:
             group1 = QGroupBox()
             label = QLabel()
