@@ -56,7 +56,9 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
             v.addWidget(label)
             v.addWidget(QLabel(book[0]))
             v.addWidget(QLabel(book[1]))
-            btn = QPushButton('Подробнее')
+            btn = QPushButton('Читать')
+            btn.setObjectName(book[4])
+            btn.clicked.connect(self.to_openBook)
             v.addWidget(btn)
             group1.setLayout(v)
             self.h.addWidget(group1)
@@ -69,7 +71,12 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
             self.wikiText.setText('определение слова не найдено')
 
     def to_openBook(self):  # открытие книги в отдельном окне
-        self.w = ReadWindow()
+        con = sqlite3.connect("DBs/Books_db.sqlite")
+        cur = con.cursor()
+        result = cur.execute(f"""SELECT * FROM Books
+                    WHERE btnName = '{self.sender().objectName()}'""").fetchone()
+        con.close()
+        self.w = ReadWindow(result[2], result[0])
         self.w.show()
 
     def to_write(self):  # открытие окна для редактирования файла
@@ -78,10 +85,14 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
 
 
 class ReadWindow(QWidget):  # окно для открытия книги
-    def __init__(self):
-        super().__init__()  # TODO: переделать открытие файла
+    def __init__(self, file_name, text_name):
+        super().__init__()
         uic.loadUi('UIs/TEXT.ui', self)
-        pass
+        text = open(file_name, mode='rt', encoding='utf-8')
+        key = text.read()
+        self.textEdit.setPlainText(key)
+        self.setWindowTitle(text_name)
+        text.close()
 
 
 class AdminOrUser(QDialog):  # выбор админки или юзера

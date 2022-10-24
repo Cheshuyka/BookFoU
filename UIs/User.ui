@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>803</width>
-    <height>914</height>
+    <width>1014</width>
+    <height>918</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <x>0</x>
       <y>0</y>
       <width>701</width>
-      <height>551</height>
+      <height>581</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -54,7 +54,7 @@
         <x>0</x>
         <y>190</y>
         <width>461</width>
-        <height>241</height>
+        <height>321</height>
        </rect>
       </property>
       <property name="readOnly">
@@ -182,7 +182,7 @@ p, li { white-space: pre-wrap; }
         <x>0</x>
         <y>60</y>
         <width>501</width>
-        <height>461</height>
+        <height>491</height>
        </rect>
       </property>
       <property name="widgetResizable">
@@ -194,7 +194,7 @@ p, li { white-space: pre-wrap; }
          <x>0</x>
          <y>0</y>
          <width>499</width>
-         <height>459</height>
+         <height>489</height>
         </rect>
        </property>
       </widget>
@@ -230,7 +230,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>803</width>
+     <width>1014</width>
      <height>26</height>
     </rect>
    </property>
