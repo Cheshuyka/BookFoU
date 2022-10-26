@@ -95,49 +95,6 @@ class ReadWindow(QWidget):  # окно для открытия книги
         text.close()
 
 
-class AdminOrUser(QDialog):  # выбор админки или юзера
-    def __init__(self):
-        super().__init__()
-        uic.loadUi('UIs/AdminOrUser.ui', self)
-        self.user_btn.clicked.connect(self.open_user)
-        self.admin_btn.clicked.connect(self.open_admin)
-
-    def open_user(self):
-        self.w = UserInterface()
-        self.w.show()
-        self.close()
-
-    def open_admin(self):
-        self.w = AdminCheck()
-        self.w.show()
-
-
-class AdminCheck(QDialog):  # проверка на разрешение
-    def __init__(self):
-        super().__init__()
-        uic.loadUi('UIs/AdminCheck.ui', self)
-        self.check_btn.clicked.connect(self.check)
-
-    def check(self):  # для проверки работы админского интерфейса в логине введите test1, а в пароле 321
-        # для проверки работы админского интерфейса со званием super, в логине введите test, а в пароле 123
-        login = self.loginEdit.text()
-        password = self.passEdit.text()
-        con = sqlite3.connect("DBs/Admins_db.sqlite")
-        cur = con.cursor()
-        result = cur.execute("""SELECT * FROM Admins
-                    WHERE login = ?""", (login,)).fetchone()
-        con.close()
-        try:
-            assert result
-            assert result[1] == password
-            print('ok')  # TODO: здесь сделать открытие Admin интерфейса
-            self.close()
-        except AssertionError:
-            self.Error_lbl.setText('Логин или пароль некорректны.\nПовторите попытку')
-            self.loginEdit.clear()
-            self.passEdit.clear()
-
-
 class WriteWindow(QWidget):  # окно для редактирования текста
     def __init__(self):
         super().__init__()
@@ -164,6 +121,6 @@ class WriteWindow(QWidget):  # окно для редактирования те
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = AdminOrUser()
+    ex = UserInterface()
     ex.show()
     sys.exit(app.exec_())
