@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -204,13 +204,13 @@ p, li { white-space: pre-wrap; }
      <attribute name="title">
       <string>Edit</string>
      </attribute>
-     <widget class="QPushButton" name="toEditBtn">
+     <widget class="QPushButton" name="toWriteNotes">
       <property name="geometry">
        <rect>
-        <x>70</x>
-        <y>100</y>
+        <x>160</x>
+        <y>130</y>
         <width>351</width>
-        <height>241</height>
+        <height>101</height>
        </rect>
       </property>
       <property name="font">
@@ -219,7 +219,25 @@ p, li { white-space: pre-wrap; }
        </font>
       </property>
       <property name="text">
-       <string>Начать писать</string>
+       <string>Писать заметки</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="toWriteEssay">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>300</y>
+        <width>351</width>
+        <height>101</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Писать сочинение</string>
       </property>
      </widget>
     </widget>
