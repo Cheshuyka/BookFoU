@@ -3,10 +3,10 @@ from PyQt5.QtWidgets import QFileDialog
 
 
 class WorkWithFiles(QWidget):
-    def SaveFiles(self, to_write):
+    def SaveFiles(self, write):
         fname = QFileDialog.getSaveFileName(self, 'Сохраняем', '')[0]
         writing = open(fname, mode='w', encoding='utf-8')
-        writing.write(to_write)
+        writing.write(write)
         writing.close()
 
     def OpenFiles(self):

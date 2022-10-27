@@ -1,13 +1,13 @@
 import sys
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QHBoxLayout, QScrollArea, QGroupBox
-from PyQt5.QtWidgets import QLabel, QWidget, QFileDialog, QCheckBox, QDialog
+from PyQt5.QtWidgets import QLabel, QWidget, QDialog
 import wikipedia
 import warnings
 from PyQt5.QtGui import QPixmap
 import sqlite3
 from WorkWithFiles import WorkWithFiles
-
+from random import choice
 
 warnings.catch_warnings()
 warnings.simplefilter("ignore")
@@ -86,7 +86,8 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
         self.write.show()
 
     def essay(self):
-        pass
+        self.w = WriteEssayWindow()
+        self.w.show()
 
 
 class PasswordCheck(QDialog):  # проверка на разрешение
@@ -119,6 +120,7 @@ class ReadWindow(QWidget):  # окно для открытия книги
     def __init__(self, file_name, text_name):
         super().__init__()
         uic.loadUi('UIs/TEXT.ui', self)
+        self.workerFiles = WorkWithFiles()
         self.save_btn.clicked.connect(self.to_save)
         text = open(file_name, mode='rt', encoding='utf-8')
         key = text.read()
@@ -127,25 +129,26 @@ class ReadWindow(QWidget):  # окно для открытия книги
         text.close()
 
     def to_save(self):
-        WorkWithFiles.SaveFiles(self.textEdit.toPlainText())
+        self.workerFiles.SaveFiles(self.textEdit.toPlainText())
 
 
 class WriteWindow(QWidget):  # окно для редактирования текста
     def __init__(self):
         super().__init__()
         uic.loadUi('UIs/WRITE.ui', self)
+        self.workerFiles = WorkWithFiles()
         self.opening.clicked.connect(self.to_openFile)
         self.clear.clicked.connect(self.to_clearFile)
         self.save.clicked.connect(self.to_saveFile)
 
     def to_openFile(self):  # открытие файла
-        WorkWithFiles.OpenFiles()
+        self.textEdit.setPlainText(self.workerFiles.OpenFiles())
 
     def to_clearFile(self):  # очистка поля ввода
         self.textEdit.clear()
 
     def to_saveFile(self):  # сохранение файла
-        WorkWithFiles.SaveFiles(self.textEdit.toPlainText())
+        self.workerFiles.SaveFiles(self.textEdit.toPlainText())
 
 
 class Enter(QDialog):
@@ -187,7 +190,7 @@ class UserAdd(QDialog):  # добавление пользователя
         con = sqlite3.connect("DBs/Users_db.sqlite")
         check = con.cursor()
         result = check.execute("""SELECT * FROM Users
-                    WHERE login = ?""", (login,)).fetchone()
+                    WHERE login = ?""", (login,)).fetchall()
         try:
             assert not(result)
         except AssertionError:
@@ -195,7 +198,7 @@ class UserAdd(QDialog):  # добавление пользователя
             return
         cur = con.cursor()
         cur.execute("""INSERT INTO Users(login, password) 
-        VALUES(?, ?)""", (login, password)).fetchone()
+        VALUES(?, ?)""", (login, password))
         con.commit()
         con.close()
         self.w = UserInterface()
@@ -206,23 +209,26 @@ class UserAdd(QDialog):  # добавление пользователя
 class WriteEssayWindow(QWidget):  # окно для редактирования текста
     def __init__(self):
         super().__init__()
-        uic.loadUi('UIs/WRITE.ui', self)
+        uic.loadUi('UIs/WRITE_ESSAY.ui', self)
         self.opening.clicked.connect(self.to_openFile)
         self.clear.clicked.connect(self.to_clearFile)
         self.save.clicked.connect(self.to_saveFile)
         self.getTheme.clicked.connect(self.show_theme)
 
     def to_openFile(self):  # открытие файла
-        WorkWithFiles.OpenFiles()
+        self.textEdit.setPlainText(WorkWithFiles.OpenFiles())
 
     def show_theme(self):  # открытие файла
-        pass
+        f = open("texts/essays.txt", mode="rt", encoding='utf-8')
+        key = list(map(lambda x: x.strip('\n'), f.readlines()))
+        theme = choice(key)
+        self.theme_lbl.setText(theme)
 
     def to_clearFile(self):  # очистка поля ввода
         self.textEdit.clear()
 
     def to_saveFile(self):  # сохранение файла
-        WorkWithFiles.SaveFiles(self.textEdit.toPlainText())
+        self.textEdit.setPlainText(WorkWithFiles.SaveFiles(self.textEdit.toPlainText()))
 
 
 if __name__ == '__main__':
