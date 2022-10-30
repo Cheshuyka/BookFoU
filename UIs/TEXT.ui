@@ -36,6 +36,19 @@
     <string>Скачать книгу</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="read_btn">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>0</y>
+     <width>211</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Не прочитано</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

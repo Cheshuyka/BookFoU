@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QHBoxLayout, QScrollArea, QGroupBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QGroupBox
 from PyQt5.QtWidgets import QLabel, QWidget, QDialog
 import wikipedia
 import warnings
@@ -56,7 +56,12 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
             label.setPixmap(im)
             v = QVBoxLayout()
             v.addWidget(label)
-            v.addWidget(QLabel(book[0]))
+            name = QLabel(book[0])
+            with open('DBs/alreadyRead.txt', mode='rt', encoding='utf-8') as f:
+                key = list(map(lambda x: x.strip('\n'), f.readlines()))
+                if book[2] in key:
+                    name.setStyleSheet('color: darkgreen')
+            v.addWidget(name)
             v.addWidget(QLabel(book[1]))
             btn = QPushButton('Читать')
             btn.setObjectName(book[4])
@@ -91,13 +96,14 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
 
 
 class PasswordCheck(QDialog):  # проверка на разрешение
-    def __init__(self):
+    def __init__(self, login):
         super().__init__()
         uic.loadUi('UIs/UserCheck.ui', self)
         self.check_btn.clicked.connect(self.check)
+        self.loginEdit.setText(login)
+        self.delete_btn.clicked.connect(self.check)
 
-    def check(self):  # для проверки работы админского интерфейса в логине введите test1, а в пароле 321
-        # для проверки работы админского интерфейса со званием super, в логине введите test, а в пароле 123
+    def check(self):
         login = self.loginEdit.text()
         password = self.passEdit.text()
         con = sqlite3.connect("DBs/Users_db.sqlite")
@@ -108,28 +114,64 @@ class PasswordCheck(QDialog):  # проверка на разрешение
         try:
             assert result
             assert result[1] == password
-            self.w = UserInterface()
-            self.w.show()
-            self.close()
+            if self.sender().text() == 'удалить пользователя':
+                con = sqlite3.connect("DBs/Users_db.sqlite")
+                cur = con.cursor()
+                result = cur.execute("""DELETE FROM Users
+                WHERE login = ?""", (login,))
+                con.commit()
+                con.close()
+                self.w = Enter()
+                self.w.show()
+                self.close()
+            else:
+                self.w = UserInterface()
+                self.w.show()
+                self.close()
         except AssertionError:
             self.Error_lbl.setText('Логин или пароль некорректны.\nПовторите попытку')
             self.loginEdit.clear()
-            self.passEdit.clear()
+
 
 class ReadWindow(QWidget):  # окно для открытия книги
     def __init__(self, file_name, text_name):
         super().__init__()
         uic.loadUi('UIs/TEXT.ui', self)
+        self.file_name = file_name
         self.workerFiles = WorkWithFiles()
         self.save_btn.clicked.connect(self.to_save)
-        text = open(file_name, mode='rt', encoding='utf-8')
+        text = open(self.file_name, mode='rt', encoding='utf-8')
         key = text.read()
         self.textEdit.setPlainText(key)
         self.setWindowTitle(text_name)
         text.close()
+        self.read_btn.clicked.connect(self.set_read)
+        f = open('DBs/alreadyRead.txt', mode='r+', encoding='utf-8')
+        self.key1 = list(map(lambda x: x.strip('\n'), f.readlines()))
+        f.close()
+
+        if self.file_name in self.key1:
+            self.read_btn.setStyleSheet('background-color: lightgreen; color: white')
+            self.read_btn.setText('Прочитано')
 
     def to_save(self):
         self.workerFiles.SaveFiles(self.textEdit.toPlainText())
+
+    def set_read(self):
+        f = open('DBs/alreadyRead.txt', mode='r+', encoding='utf-8')
+        if self.read_btn.text() == 'Не прочитано':
+            self.read_btn.setStyleSheet('background-color: lightgreen; color: white')
+            self.read_btn.setText('Прочитано')
+            self.key1.append(self.file_name)
+            f.truncate(0)
+            f.write('\n'.join(self.key1))
+        else:
+            self.read_btn.setStyleSheet('background-color: white; color: black')
+            self.read_btn.setText('Не прочитано')
+            self.key1.remove(self.file_name)
+            f.truncate(0)
+            f.write('\n'.join(self.key1))
+        f.close()
 
 
 class WriteWindow(QWidget):  # окно для редактирования текста
@@ -155,16 +197,30 @@ class Enter(QDialog):
     def __init__(self):
         super().__init__()
         uic.loadUi('UIs/Enter.ui', self)
-        self.CheckUser.clicked.connect(self.check)
         self.AddUser.clicked.connect(self.add)
 
+        self.groupBox = QGroupBox()
+        self.h = QVBoxLayout()
+        self.groupBox.setLayout(self.h)
+        self.scrollArea.setWidget(self.groupBox)
+
+        con = sqlite3.connect("DBs/Users_db.sqlite")
+        check = con.cursor()
+        result = check.execute("""SELECT login FROM Users""").fetchall()
+        for i in result:
+            btn = QPushButton(i[0])
+            btn.clicked.connect(self.check)
+            self.h.addWidget(btn)
+
     def check(self):
-        self.w = PasswordCheck()
+        self.w = PasswordCheck(self.sender().text())
         self.w.open()
+        self.close()
 
     def add(self):
         self.w = UserAdd()
         self.w.show()
+        self.close()
 
 
 class UserAdd(QDialog):  # добавление пользователя
@@ -214,9 +270,11 @@ class WriteEssayWindow(QWidget):  # окно для редактирования
         self.clear.clicked.connect(self.to_clearFile)
         self.save.clicked.connect(self.to_saveFile)
         self.getTheme.clicked.connect(self.show_theme)
+        self.openingRecent.clicked.connect(self.show_essays)
+        self.workerFiles = WorkWithFiles()
 
     def to_openFile(self):  # открытие файла
-        self.textEdit.setPlainText(WorkWithFiles.OpenFiles())
+        self.textEdit.setPlainText(self.workerFiles.OpenFiles())
 
     def show_theme(self):  # открытие файла
         f = open("texts/essays.txt", mode="rt", encoding='utf-8')
@@ -228,14 +286,13 @@ class WriteEssayWindow(QWidget):  # окно для редактирования
         self.textEdit.clear()
 
     def to_saveFile(self):  # сохранение файла
-        self.textEdit.setPlainText(WorkWithFiles.SaveFiles(self.textEdit.toPlainText()))
+        self.textEdit.setPlainText(self.workerFiles.SaveFiles(self.textEdit.toPlainText()))
+
+    def show_essays(self): # TODO: сделать вывод уже написанных сочинений
+        pass
 
 
 if __name__ == '__main__':
-    # con = sqlite3.connect("DBs/Users_db.sqlite")
-    # check = con.cursor()
-    # result = check.execute("""DELETE FROM Users""").fetchall()
-    # print(result)
     app = QApplication(sys.argv)
     ex = Enter()
     ex.show()
