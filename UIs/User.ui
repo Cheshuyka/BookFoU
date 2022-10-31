@@ -20,7 +20,7 @@
       <x>0</x>
       <y>0</y>
       <width>701</width>
-      <height>581</height>
+      <height>861</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -182,7 +182,7 @@ p, li { white-space: pre-wrap; }
         <x>0</x>
         <y>60</y>
         <width>501</width>
-        <height>491</height>
+        <height>771</height>
        </rect>
       </property>
       <property name="widgetResizable">
@@ -194,7 +194,7 @@ p, li { white-space: pre-wrap; }
          <x>0</x>
          <y>0</y>
          <width>499</width>
-         <height>489</height>
+         <height>769</height>
         </rect>
        </property>
       </widget>

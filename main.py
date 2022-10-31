@@ -8,6 +8,7 @@ from PyQt5.QtGui import QPixmap
 import sqlite3
 from WorkWithFiles import WorkWithFiles
 from random import choice
+from ShowResult import Result
 
 warnings.catch_warnings()
 warnings.simplefilter("ignore")
@@ -76,6 +77,8 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
             self.h.addWidget(group1)
 
     def findTests(self):
+        for i in reversed(range(self.v.count())):  # очищаем место для вывода книг
+            self.v.itemAt(i).widget().setParent(None)
         name = self.testName.text()
         if name:
             wheres = f"WHERE testName LIKE '%{name}%'"
@@ -120,6 +123,7 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
         name = self.sender().objectName()
         self.w = Test(name)
         self.w.show()
+
 
 class PasswordCheck(QDialog):  # проверка пользователя
     def __init__(self, login):
@@ -320,9 +324,11 @@ class Test(QWidget):
         uic.loadUi('UIs/Test.ui', self)
         self.h = QVBoxLayout()
         self.answer_btn.clicked.connect(self.next)
+        self.answer_btn.setStyleSheet('background-color: lightgreen; color: white')
         self.answer_lbl = QLineEdit()
         self.groupBox.setLayout(self.h)
         self.correct = 0
+        self.skipped = 0
 
         f = open(file, mode="rt", encoding='utf-8')
         self.key = list(map(lambda x: x.strip('\n'), f.readlines()))
@@ -349,7 +355,6 @@ class Test(QWidget):
                 btn = QRadioButton(i)
                 self.h.addWidget(btn)
 
-
     def next(self):
         self.progress += self.percent
         type = self.key[0][0]
@@ -361,13 +366,20 @@ class Test(QWidget):
                 if btn.isChecked():
                     answer = btn.text()
         try:
+            assert answer is None
+            self.skipped += 1
+        except AssertionError:
+            pass
+        try:
             assert answer == self.key[1]
             self.correct += 1
         except AssertionError:
             pass
         self.key = self.key[2:]
         if self.key[0] == 'END':
-            print(self.correct)
+            self.w = Result(self.correct, self.all - self.correct - self.skipped, self.skipped)
+            self.w.show()
+            self.close()
         else:
             self.show_test()
 
