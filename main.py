@@ -160,7 +160,7 @@ class PasswordCheck(QDialog):  # проверка пользователя
                 self.close()
         except AssertionError:
             self.Error_lbl.setText('Логин или пароль некорректны.\nПовторите попытку')
-            self.loginEdit.clear()
+            self.passEdit.clear()
 
 
 class ReadWindow(QWidget):  # окно для открытия книги
@@ -366,7 +366,7 @@ class Test(QWidget):
                 if btn.isChecked():
                     answer = btn.text()
         try:
-            assert answer is None
+            assert answer is None or answer == ''
             self.skipped += 1
         except AssertionError:
             pass
