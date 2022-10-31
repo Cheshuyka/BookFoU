@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QGroupBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QGroupBox, QLineEdit, QRadioButton
 from PyQt5.QtWidgets import QLabel, QWidget, QDialog
 import wikipedia
 import warnings
@@ -29,7 +29,12 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
         self.toWriteEssay.clicked.connect(self.essay)
         self.find_btn.clicked.connect(self.findBooks)
 
+        self.v = QVBoxLayout()
+        self.scrollTests.setLayout(self.v)
+        self.findTest_btn.clicked.connect(self.findTests)
+
         self.findBooks()  # выводим все книги
+        self.findTests()  # выводим все тесты
 
     def findBooks(self):  # вывод книг
         name = self.nameEdit.text()
@@ -70,6 +75,23 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
             group1.setLayout(v)
             self.h.addWidget(group1)
 
+    def findTests(self):
+        name = self.testName.text()
+        if name:
+            wheres = f"WHERE testName LIKE '%{name}%'"
+        else:
+            wheres = ''
+        con = sqlite3.connect("DBs/Tests_db.sqlite")  # получаем тесты из БД
+        cur = con.cursor()
+        result = cur.execute(f"""SELECT * FROM Tests
+                            {wheres}""").fetchall()
+        con.close()
+        for res in result:
+            btn = QPushButton(res[0])
+            btn.setObjectName(res[1])
+            btn.clicked.connect(self.show_test)
+            self.v.addWidget(btn)
+
     def wiki(self):  # вывод определения слова
         try:
             word = self.wikiLine.text()  # получение слова
@@ -94,6 +116,10 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
         self.w = WriteEssayWindow()
         self.w.show()
 
+    def show_test(self):
+        name = self.sender().objectName()
+        self.w = Test(name)
+        self.w.show()
 
 class PasswordCheck(QDialog):  # проверка пользователя
     def __init__(self, login):
@@ -270,14 +296,13 @@ class WriteEssayWindow(QWidget):  # окно для редактирования
         self.clear.clicked.connect(self.to_clearFile)
         self.save.clicked.connect(self.to_saveFile)
         self.getTheme.clicked.connect(self.show_theme)
-        self.openingRecent.clicked.connect(self.show_essays)
         self.workerFiles = WorkWithFiles()
 
     def to_openFile(self):  # открытие файла
         self.textEdit.setPlainText(self.workerFiles.OpenFiles())
 
     def show_theme(self):  # получение темы для сочинения
-        f = open("texts/essays.txt", mode="rt", encoding='utf-8')
+        f = open("DBs/Essays.txt", mode="rt", encoding='utf-8')
         key = list(map(lambda x: x.strip('\n'), f.readlines()))
         theme = choice(key)
         self.theme_lbl.setText(theme)
@@ -288,8 +313,63 @@ class WriteEssayWindow(QWidget):  # окно для редактирования
     def to_saveFile(self):  # сохранение файла
         self.textEdit.setPlainText(self.workerFiles.SaveFiles(self.textEdit.toPlainText()))
 
-    def show_essays(self):  # TODO: сделать вывод уже написанных сочинений
-        pass
+
+class Test(QWidget):
+    def __init__(self, file):
+        super().__init__()
+        uic.loadUi('UIs/Test.ui', self)
+        self.h = QVBoxLayout()
+        self.answer_btn.clicked.connect(self.next)
+        self.answer_lbl = QLineEdit()
+        self.groupBox.setLayout(self.h)
+        self.correct = 0
+
+        f = open(file, mode="rt", encoding='utf-8')
+        self.key = list(map(lambda x: x.strip('\n'), f.readlines()))
+        f.close()
+        self.all = (len(self.key) - 1) // 2
+        self.percent = 100 // self.all
+        self.progress = 0
+        self.show_test()
+
+    def show_test(self):  # TODO: сделать вывод теста
+        self.progressBar.setValue(self.progress)
+        for i in reversed(range(self.h.count())):
+            self.h.itemAt(i).widget().setParent(None)
+        question = self.key[0]
+        if question[0] == '#':
+            self.question.setPlainText(question[1:])
+            self.h.addWidget(QLabel('Введите ответ:'))
+            self.h.addWidget(self.answer_lbl)
+        elif question[0] == '*':
+            question = question[1:].split(' & ')
+            question, options = question[0], question[1].split(';')
+            self.question.setPlainText(question)
+            for i in options:
+                btn = QRadioButton(i)
+                self.h.addWidget(btn)
+
+
+    def next(self):
+        self.progress += self.percent
+        type = self.key[0][0]
+        answer = None
+        if type == '#':
+            answer = self.answer_lbl.text()
+        elif type == '*':
+            for btn in self.groupBox.findChildren(QRadioButton):
+                if btn.isChecked():
+                    answer = btn.text()
+        try:
+            assert answer == self.key[1]
+            self.correct += 1
+        except AssertionError:
+            pass
+        self.key = self.key[2:]
+        if self.key[0] == 'END':
+            print(self.correct)
+        else:
+            self.show_test()
 
 
 if __name__ == '__main__':

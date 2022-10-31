@@ -52,7 +52,7 @@
   <widget class="QPushButton" name="clear">
    <property name="geometry">
     <rect>
-     <x>330</x>
+     <x>220</x>
      <y>0</y>
      <width>111</width>
      <height>51</height>
@@ -65,7 +65,7 @@
   <widget class="QPushButton" name="getTheme">
    <property name="geometry">
     <rect>
-     <x>440</x>
+     <x>330</x>
      <y>0</y>
      <width>111</width>
      <height>51</height>
@@ -109,19 +109,6 @@
    </property>
    <property name="text">
     <string>Тема:</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="openingRecent">
-   <property name="geometry">
-    <rect>
-     <x>220</x>
-     <y>0</y>
-     <width>111</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>OpenRecent</string>
    </property>
   </widget>
  </widget>
