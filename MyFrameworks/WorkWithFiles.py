@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QFileDialog
 
 
-class WorkWithFiles(QWidget):
-    def SaveFiles(self, write):
+class WorkWithFiles(QWidget):  # класс для работы с файлами
+    def SaveFiles(self, write):  # сохранение файла
         try:
             fname = QFileDialog.getSaveFileName(self, 'Сохраняем', '')[0]
             writing = open(fname, mode='w', encoding='utf-8')
@@ -12,7 +12,7 @@ class WorkWithFiles(QWidget):
         except FileNotFoundError:
             pass
 
-    def OpenFiles(self):
+    def OpenFiles(self):  # открытие файла
         try:
             fname = QFileDialog.getOpenFileName(self, 'Выбрать текст', '')[0]
             with open(fname, mode='rt', encoding='utf-8') as writing:
