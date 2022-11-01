@@ -1,34 +1,63 @@
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
 from MyFrameworks.WorkWithFiles import WorkWithFiles
-from random import choice
 
 
-class WriteEssayWindow(QWidget):  # окно для редактирования сочинений
+class WriteEssay():
+    def __init__(self):
+        self.write = Writing()
+        self.read = ReadTask()
+        self.write.show()
+        self.read.show()
+
+
+class Writing(QWidget):  # окно для редактирования сочинений
     def __init__(self):
         super().__init__()
         uic.loadUi('UIs/WRITE_ESSAY.ui', self)
-        self.opening.clicked.connect(self.to_openFile)
         self.clear.clicked.connect(self.to_clearFile)
         self.save.clicked.connect(self.to_saveFile)
-        self.getTheme.clicked.connect(self.show_theme)
         self.workerFiles = WorkWithFiles()
-
-    def to_openFile(self):  # открытие файла
-        self.textEdit.setPlainText(self.workerFiles.OpenFiles())
-
-    def show_theme(self):  # получение темы для сочинения
-        f = open("DBs/Essays.txt", mode="rt", encoding='utf-8')
-        key = list(map(lambda x: x.strip('\n'), f.readlines()))
-        theme = choice(key)
-        self.theme_lbl.setText(theme)
+        self.getTips.clicked.connect(self.tips)
 
     def to_clearFile(self):  # очистка поля ввода
         self.textEdit.clear()
 
     def to_saveFile(self):  # сохранение файла
-        self.textEdit.setPlainText(self.workerFiles.SaveFiles(self.textEdit.toPlainText()))
+        self.workerFiles.SaveFiles(self.textEdit.toPlainText())
 
+    def tips(self):  # TODO: сделать вывод подсказок для сочинений
+        pass
+
+
+class ReadTask(QWidget):  # окно для вывода задания для сочинения
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('UIs/TEXTofTASK.ui', self)
+        self.save.clicked.connect(self.to_saveFile)
+        self.workerFiles = WorkWithFiles()
+        self.getTips.clicked.connect(self.tips)
+        self.getTheme.clicked.connect(self.theme)
+
+    def to_saveFile(self):  # сохранение файла
+        self.workerFiles.SaveFiles(self.taskText.toPlainText())
+
+    def tips(self):
+        Writing.tips()
+
+    def theme(self):
+        f = open('Essays/LastWritten.txt', mode='rt', encoding='utf-8')
+        key = f.read()
+        f.close()
+        f = open('Essays/LastWritten.txt', mode='w', encoding='utf-8')
+        f.write(str(int(key) + 1))
+        f.close()
+        g = open(f'Essays/Essay {key}.txt', mode='rt', encoding='utf-8')
+        s = g.read()
+        g1 = open('Essays/Task.txt', mode='rt', encoding='utf-8')
+        s1 = g1.read()
+        s2 = s1 + '\n\n' + s
+        self.taskText.setPlainText(s2)
 
 class WriteWindow(QWidget):  # окно для редактирования заметок
     def __init__(self):

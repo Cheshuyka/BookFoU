@@ -114,8 +114,7 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
         self.write.show()
 
     def essay(self):  # открытие окна для написания сочинений
-        self.w = WriteEssayWindow()
-        self.w.show()
+        self.w = WriteEssay()
 
     def show_test(self):
         name = self.sender().objectName()
@@ -143,7 +142,7 @@ class Test(QWidget):
         self.progress = 0
         self.show_test()
 
-    def show_test(self):  # TODO: сделать вывод теста
+    def show_test(self):
         self.progressBar.setValue(self.progress)
         for i in reversed(range(self.h.count())):
             self.h.itemAt(i).widget().setParent(None)
