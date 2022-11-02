@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1246</width>
+    <height>896</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1251</width>
+     <height>901</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>2</number>
+   </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Задание</string>
+    </attribute>
+    <widget class="QPushButton" name="save">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>111</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Save</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="getTheme">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>0</y>
+       <width>111</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Theme</string>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="taskText">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>50</y>
+       <width>1241</width>
+       <height>711</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Подсказки</string>
+    </attribute>
+    <widget class="QTextBrowser" name="textBrowser">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>1241</width>
+       <height>631</height>
+      </rect>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Подсказки по написанию сочинения (&lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-style:italic; text-decoration: underline;&quot;&gt;в соответствии с 27 заданием по русскому языку из ЕГЭ&lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_3">
+    <attribute name="title">
+     <string>Критерии оценки</string>
+    </attribute>
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>1241</width>
+       <height>641</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="autoScroll">
+      <bool>true</bool>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="dragEnabled">
+      <bool>false</bool>
+     </property>
+     <property name="dragDropOverwriteMode">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ContiguousSelection</enum>
+     </property>
+     <property name="rowCount">
+      <number>12</number>
+     </property>
+     <attribute name="horizontalHeaderCascadingSectionResizes">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>300</number>
+     </attribute>
+     <attribute name="horizontalHeaderHighlightSections">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="horizontalHeaderMinimumSectionSize">
+      <number>600</number>
+     </attribute>
+     <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderCascadingSectionResizes">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderDefaultSectionSize">
+      <number>50</number>
+     </attribute>
+     <row>
+      <property name="text">
+       <string>К1</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>K2</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>K3</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>K4</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>K5</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>K6</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>K7</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>K8</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>K9</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>K10</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>K11</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>K12</string>
+      </property>
+     </row>
+     <column>
+      <property name="text">
+       <string>За что ставятся баллы</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Максимальный балл</string>
+      </property>
+     </column>
+     <item row="0" column="0">
+      <property name="text">
+       <string>Определение проблемы (допустимы разные формулировки, главное, чтобы был верно передан смысл). Если по К1 стоит 0, то по К2, К3 и К4 тоже выставляется ноль.</string>
+      </property>
+     </item>
+     <item row="0" column="1">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item row="1" column="0">
+      <property name="text">
+       <string>Комментарий к проблеме</string>
+      </property>
+     </item>
+     <item row="1" column="1">
+      <property name="text">
+       <string>5 (по баллу за каждый  пример, пояснение к нему и связь между примерами)</string>
+      </property>
+     </item>
+     <item row="2" column="0">
+      <property name="text">
+       <string>Позиция автора</string>
+      </property>
+     </item>
+     <item row="2" column="1">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item row="3" column="0">
+      <property name="text">
+       <string>Своя позиция</string>
+      </property>
+     </item>
+     <item row="3" column="1">
+      <property name="text">
+       <string>1 (ставится, если позиция понятно выражена и аргументирована)</string>
+      </property>
+     </item>
+     <item row="4" column="0">
+      <property name="text">
+       <string>Логическое построение текста, смысловая связность предложений</string>
+      </property>
+     </item>
+     <item row="4" column="1">
+      <property name="text">
+       <string>2</string>
+      </property>
+     </item>
+     <item row="5" column="0">
+      <property name="text">
+       <string>Точность и выразительность речи</string>
+      </property>
+     </item>
+     <item row="5" column="1">
+      <property name="text">
+       <string>2 (максимальный балл ставят только при наличии максимума в критерии К10)</string>
+      </property>
+     </item>
+     <item row="6" column="0">
+      <property name="text">
+       <string>Соблюдение орфографических норм </string>
+      </property>
+     </item>
+     <item row="6" column="1">
+      <property name="text">
+       <string>3</string>
+      </property>
+     </item>
+     <item row="7" column="0">
+      <property name="text">
+       <string>Соблюдение пунктуационных норм</string>
+      </property>
+     </item>
+     <item row="7" column="1">
+      <property name="text">
+       <string>3</string>
+      </property>
+     </item>
+     <item row="8" column="0">
+      <property name="text">
+       <string>Соблюдение грамматических норм</string>
+      </property>
+     </item>
+     <item row="8" column="1">
+      <property name="text">
+       <string>2</string>
+      </property>
+     </item>
+     <item row="9" column="0">
+      <property name="text">
+       <string>Соблюдение речевых норм</string>
+      </property>
+     </item>
+     <item row="9" column="1">
+      <property name="text">
+       <string>2</string>
+      </property>
+     </item>
+     <item row="10" column="0">
+      <property name="text">
+       <string>Соблюдение этических норм</string>
+      </property>
+     </item>
+     <item row="10" column="1">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item row="11" column="0">
+      <property name="text">
+       <string>Соблюдение фактической точности</string>
+      </property>
+     </item>
+     <item row="11" column="1">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

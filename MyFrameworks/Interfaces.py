@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QLabel
 import wikipedia
 import warnings
 from PyQt5.QtGui import QPixmap
-import sqlite3
 from MyFrameworks.ShowResult import Result
 from MyFrameworks.TextWindows import *
 
@@ -31,9 +30,11 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
         self.v = QVBoxLayout()
         self.scrollTests.setLayout(self.v)
         self.findTest_btn.clicked.connect(self.findTests)
+        self.update_btn.clicked.connect(self.showMadeTests)
 
         self.findBooks()  # выводим все книги
         self.findTests()  # выводим все тесты
+        self.showMadeTests()
 
     def findBooks(self):  # вывод книг
         name = self.nameEdit.text()
@@ -61,10 +62,9 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
             v = QVBoxLayout()
             v.addWidget(label)
             name = QLabel(book[0])  # Помещаем название книги в label
-            with open('DBs/alreadyRead.txt', mode='rt', encoding='utf-8') as f:
-                key = list(map(lambda x: x.strip('\n'), f.readlines()))
-                if book[2] in key:  # если книга уже прочитана, то название книги будет зеленым
-                    name.setStyleSheet('color: darkgreen')
+
+            if book[5]:  # если книга уже прочитана, то название книги будет зеленым
+                name.setStyleSheet('color: darkgreen')
             v.addWidget(name)
             v.addWidget(QLabel(book[1]))  # Помещаем имя автора в label
             btn = QPushButton('Читать')
@@ -93,6 +93,9 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
             btn.clicked.connect(self.show_test)
             self.v.addWidget(btn)
 
+    def showMadeTests(self):
+        pass
+
     def wiki(self):  # вывод определения слова
         try:
             word = self.wikiLine.text()  # получение слова
@@ -106,7 +109,7 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
         result = cur.execute(f"""SELECT * FROM Books
                     WHERE btnName = '{self.sender().objectName()}'""").fetchone()
         con.close()
-        self.w = ReadWindow(result[2], result[0])
+        self.w = ReadWindow(result[0], result[2])
         self.w.show()
 
     def note(self):  # открытие окна для редактирования заметок

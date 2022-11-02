@@ -52,19 +52,6 @@
     <string>Clear</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="getTips">
-   <property name="geometry">
-    <rect>
-     <x>220</x>
-     <y>0</y>
-     <width>111</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Tips</string>
-   </property>
-  </widget>
  </widget>
  <resources/>
  <connections/>
