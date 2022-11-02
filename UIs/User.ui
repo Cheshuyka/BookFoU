@@ -343,16 +343,6 @@ p, li { white-space: pre-wrap; }
      <attribute name="title">
       <string>Пройденные тесты</string>
      </attribute>
-     <widget class="QTableView" name="tableTests">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>30</y>
-        <width>701</width>
-        <height>751</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QPushButton" name="update_btn">
       <property name="geometry">
        <rect>
@@ -365,6 +355,43 @@ p, li { white-space: pre-wrap; }
       <property name="text">
        <string>Обновить</string>
       </property>
+     </widget>
+     <widget class="QTableWidget" name="tableWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>30</y>
+        <width>701</width>
+        <height>751</height>
+       </rect>
+      </property>
+      <property name="rowCount">
+       <number>0</number>
+      </property>
+      <property name="columnCount">
+       <number>3</number>
+      </property>
+      <attribute name="horizontalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="horizontalHeaderCascadingSectionResizes">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>233</number>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderCascadingSectionResizes">
+       <bool>true</bool>
+      </attribute>
+      <column/>
+      <column/>
+      <column/>
      </widget>
     </widget>
    </widget>
