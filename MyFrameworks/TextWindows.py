@@ -6,25 +6,11 @@ import sqlite3
 
 class WriteEssay():
     def __init__(self):
-        self.write = Writing()
+        self.write = WriteWindow()
         self.read = ReadTask()
         self.write.show()
         self.read.show()
 
-
-class Writing(QWidget):  # окно для редактирования сочинений
-    def __init__(self):
-        super().__init__()
-        uic.loadUi('UIs/WRITE_ESSAY.ui', self)
-        self.clear.clicked.connect(self.to_clearFile)
-        self.save.clicked.connect(self.to_saveFile)
-        self.workerFiles = WorkWithFiles()
-
-    def to_clearFile(self):  # очистка поля ввода
-        self.textEdit.clear()
-
-    def to_saveFile(self):  # сохранение файла
-        self.workerFiles.SaveFiles(self.textEdit.toPlainText())
 
 class ReadTask(QWidget):  # окно для вывода задания для сочинения
     def __init__(self):

@@ -6,39 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>708</width>
-    <height>433</height>
+    <width>1009</width>
+    <height>509</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Вход</string>
   </property>
-  <widget class="QPushButton" name="AddUser">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>50</y>
-     <width>391</width>
-     <height>71</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>18</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Добавить пользователя</string>
-   </property>
-  </widget>
   <widget class="QScrollArea" name="scrollArea">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>150</y>
+     <x>280</x>
+     <y>140</y>
      <width>391</width>
-     <height>281</height>
+     <height>241</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
    </property>
    <property name="widgetResizable">
     <bool>true</bool>
@@ -49,10 +34,47 @@
       <x>0</x>
       <y>0</y>
       <width>389</width>
-      <height>279</height>
+      <height>239</height>
      </rect>
     </property>
    </widget>
+  </widget>
+  <widget class="QCommandLinkButton" name="commandLinkButton">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>410</y>
+     <width>161</width>
+     <height>48</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>Вы владелец?</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="AddUser">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>30</y>
+     <width>391</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>Добавить пользователя</string>
+   </property>
   </widget>
  </widget>
  <resources/>

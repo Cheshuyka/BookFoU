@@ -189,3 +189,9 @@ class Test(QWidget):
             self.close()
         else:
             self.show_test()
+
+
+class HostInterface(QMainWindow):  # интерфейс владельца
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('UIs/Host.ui', self)
