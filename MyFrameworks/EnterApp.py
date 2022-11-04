@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QDialog
 import sqlite3
 from MyFrameworks.Interfaces import UserInterface, HostInterface
 from MyFrameworks.Errors import *
+from backgrounds.enterBack import *
 
 
 class PasswordCheck(QDialog):  # проверка пользователя
@@ -13,6 +14,8 @@ class PasswordCheck(QDialog):  # проверка пользователя
         self.check_btn.clicked.connect(self.check)
         self.loginEdit.setText(login)
         self.delete_btn.clicked.connect(self.check)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
     def check(self):
         login = self.loginEdit.text()
@@ -25,7 +28,7 @@ class PasswordCheck(QDialog):  # проверка пользователя
         try:
             assert result  # пользователь найден
             assert result[1] == password  # пароль правильный
-            if self.sender().text() == 'удалить пользователя':
+            if self.sender().text() == 'Удалить пользователя':
                 con = sqlite3.connect("DBs/Users_db.sqlite")
                 cur = con.cursor()
                 result = cur.execute("""DELETE FROM Users
@@ -54,7 +57,7 @@ class Enter(QDialog):  # окно для входа в программу
         self.h = QVBoxLayout()
         self.groupBox.setLayout(self.h)
         self.scrollArea.setWidget(self.groupBox)
-        self.commandLinkButton.clicked.connect(self.openHostCheck)
+        self.host_btn.clicked.connect(self.openHostCheck)
 
         con = sqlite3.connect("DBs/Users_db.sqlite")  # получение списка логинов
         check = con.cursor()
@@ -84,6 +87,9 @@ class UserAdd(QDialog):  # окно добавления пользовател�
         super().__init__()
         uic.loadUi('UIs/UserAdd.ui', self)
         self.check_btn.clicked.connect(self.add)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.exitButton.clicked.connect(self.exit)
 
     def add(self):
         login = self.loginEdit.text()
@@ -117,12 +123,19 @@ class UserAdd(QDialog):  # окно добавления пользовател�
         self.w.show()
         self.close()
 
+    def exit(self):
+        self.w = Enter()
+        self.w.show()
+        self.close()
+
 
 class HostCheck(QDialog):  # проверка пользователя
     def __init__(self):
         super().__init__()
         uic.loadUi('UIs/HostCheck.ui', self)
         self.enterButton.clicked.connect(self.check)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
     def check(self):
         login = self.loginEdit.text()
