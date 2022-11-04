@@ -38,13 +38,18 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
 
     def findBooks(self):  # вывод книг
         name = self.nameEdit.text()
-        author = self.authorEdit.text()
-        if name and author:  # подбираем фильтры для вывода книг
-            wheres = f"WHERE name LIKE '%{name}%' AND author LIKE '%{author}%'"
+        authorName = self.authorEdit.text()
+        con = sqlite3.connect("DBs/Authors_db.sqlite")  # получаем id автора из БД
+        cur = con.cursor()
+        author = cur.execute(f"""SELECT * FROM Authors
+                    WHERE name LIKE '%{authorName}%'""").fetchone()
+        con.close()
+        if name and authorName:  # подбираем фильтры для вывода книг
+            wheres = f"WHERE name LIKE '%{name}%' AND author LIKE '%{author[0]}%'"
         elif name:
             wheres = f"WHERE name LIKE '%{name}%'"
-        elif author:
-            wheres = f"WHERE author LIKE '%{author}%'"
+        elif authorName:
+            wheres = f"WHERE author LIKE '%{author[0]}%'"
         else:
             wheres = ''
         con = sqlite3.connect("DBs/Books_db.sqlite")  # получаем книги из БД
@@ -57,18 +62,23 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
         for book in result:
             group1 = QGroupBox()
             label = QLabel()
-            im = QPixmap(book[3])
+            im = QPixmap(book[4])
             label.setPixmap(im)  # Помещаем обложку книги в label
             v = QVBoxLayout()
             v.addWidget(label)
-            name = QLabel(book[0])  # Помещаем название книги в label
+            name = QLabel(book[1])  # Помещаем название книги в label
 
-            if book[5]:  # если книга уже прочитана, то название книги будет зеленым
+            if book[6]:  # если книга уже прочитана, то название книги будет зеленым
                 name.setStyleSheet('color: darkgreen')
             v.addWidget(name)
-            v.addWidget(QLabel(book[1]))  # Помещаем имя автора в label
+            con = sqlite3.connect("DBs/Authors_db.sqlite")  # получаем id автора из БД
+            cur = con.cursor()
+            author = cur.execute(f"""SELECT * FROM Authors
+                        WHERE id = ?""", (book[2],)).fetchone()
+            con.close()
+            v.addWidget(QLabel(author[1]))  # Помещаем имя автора в label
             btn = QPushButton('Читать')
-            btn.setObjectName(book[4])  # Кнопку называем ссылкой на текст (понадобится при открытии книги)
+            btn.setObjectName(book[5])  # Кнопку называем ссылкой на текст (понадобится при открытии книги)
             btn.clicked.connect(self.to_openBook)
             v.addWidget(btn)
             group1.setLayout(v)
@@ -106,10 +116,10 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
     def to_openBook(self):  # открытие книги в отдельном окне
         con = sqlite3.connect("DBs/Books_db.sqlite")
         cur = con.cursor()
-        result = cur.execute(f"""SELECT * FROM Books
+        result = cur.execute(f"""SELECT name, textLink FROM Books
                     WHERE btnName = '{self.sender().objectName()}'""").fetchone()
         con.close()
-        self.w = ReadWindow(result[0], result[2])
+        self.w = ReadWindow(result[0], result[1])
         self.w.show()
 
     def note(self):  # открытие окна для редактирования заметок

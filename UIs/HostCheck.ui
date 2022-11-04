@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1039</width>
-    <height>909</height>
+    <height>638</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -139,34 +139,13 @@ background-color: none;
     <string>Зайти как владелец</string>
    </property>
   </widget>
-  <widget class="QLabel" name="error_lbl">
-   <property name="geometry">
-    <rect>
-     <x>340</x>
-     <y>720</y>
-     <width>401</width>
-     <height>141</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: white</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
      <x>250</x>
      <y>-10</y>
      <width>571</width>
-     <height>911</height>
+     <height>631</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -176,12 +155,35 @@ background-color: none;
     <string/>
    </property>
   </widget>
+  <widget class="QPushButton" name="exitButton">
+   <property name="geometry">
+    <rect>
+     <x>760</x>
+     <y>10</y>
+     <width>51</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../../../../Desktop/exit_icon.jpg</normaloff>../../../../Desktop/exit_icon.jpg</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>60</width>
+     <height>60</height>
+    </size>
+   </property>
+  </widget>
   <zorder>label_4</zorder>
   <zorder>keyEdit</zorder>
   <zorder>passEdit</zorder>
   <zorder>loginEdit</zorder>
   <zorder>enterButton</zorder>
-  <zorder>error_lbl</zorder>
+  <zorder>exitButton</zorder>
  </widget>
  <resources>
   <include location="../../../../Downloads/background.qrc"/>

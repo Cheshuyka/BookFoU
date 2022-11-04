@@ -1,6 +1,4 @@
-from PyQt5 import uic
 from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QGroupBox
-from PyQt5.QtWidgets import QDialog
 import sqlite3
 from MyFrameworks.Interfaces import UserInterface, HostInterface
 from MyFrameworks.Errors import *
@@ -16,6 +14,7 @@ class PasswordCheck(QDialog):  # проверка пользователя
         self.delete_btn.clicked.connect(self.check)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.exit_btn.clicked.connect(self.exit)
 
     def check(self):
         login = self.loginEdit.text()
@@ -26,8 +25,10 @@ class PasswordCheck(QDialog):  # проверка пользователя
                     WHERE login = ?""", (login,)).fetchone()
         con.close()
         try:
-            assert result  # пользователь найден
-            assert result[1] == password  # пароль правильный
+            if not(result): # пользователь не найден
+                raise LoginError('Пользователь не найден')
+            if result[1] != password:  # неверный пароль
+                raise PasswordError('Неверный пароль')
             if self.sender().text() == 'Удалить пользователя':
                 con = sqlite3.connect("DBs/Users_db.sqlite")
                 cur = con.cursor()
@@ -42,9 +43,14 @@ class PasswordCheck(QDialog):  # проверка пользователя
                 self.w = UserInterface()  # открытие окна пользователя
                 self.w.show()
                 self.close()
-        except AssertionError:
-            self.Error_lbl.setText('Логин или пароль некорректны.\nПовторите попытку')
-            self.passEdit.clear()
+        except Exception as e:
+            self.w = ErrorDialog(e.__str__())
+            self.w.show()
+
+    def exit(self):
+        self.w = Enter()
+        self.w.show()
+        self.close()
 
 
 class Enter(QDialog):  # окно для входа в программу
@@ -96,32 +102,29 @@ class UserAdd(QDialog):  # окно добавления пользовател�
         password = self.passEdit.text()
         repeat = self.passRepeat.text()
         try:
-            assert password == repeat  # пароли совпадают
             if not(password):  # если пароль пуст
-                raise ValueError
-        except AssertionError:
-            self.Error_lbl.setText('Пароли различны.\nПовторите попытку')
-            return
-        except ValueError:
-            self.Error_lbl.setText('Пароли пустой.\nПовторите попытку')
-            return
-        con = sqlite3.connect("DBs/Users_db.sqlite")
-        check = con.cursor()
-        result = check.execute("""SELECT * FROM Users
-                    WHERE login = ?""", (login,)).fetchall()
-        try:
-            assert not(result)  # проверка на то, что логин не используется
-        except AssertionError:
-            self.Error_lbl.setText('Логин уже используется.\nПовторите попытку')
-            return
-        cur = con.cursor()
-        cur.execute("""INSERT INTO Users(login, password)
-        VALUES(?, ?)""", (login, password))  # добавляем логин и пароль в БД
-        con.commit()
-        con.close()
-        self.w = UserInterface()  # открываем окно пользователя
-        self.w.show()
-        self.close()
+                raise PasswordError('Пароль пуст')
+            if not(login):
+                raise LoginError('Логин пуст')
+            if password != repeat:  # пароли не совпадают
+                raise PasswordError('Пароли не совпадают')
+            con = sqlite3.connect("DBs/Users_db.sqlite")
+            check = con.cursor()
+            result = check.execute("""SELECT * FROM Users
+                        WHERE login = ?""", (login,)).fetchall()
+            if result:  # проверка на то, что логин не используется
+                raise LoginError('Логин уже используется')
+            cur = con.cursor()
+            cur.execute("""INSERT INTO Users(login, password)
+            VALUES(?, ?)""", (login, password))  # добавляем логин и пароль в БД
+            con.commit()
+            con.close()
+            self.w = UserInterface()  # открываем окно пользователя
+            self.w.show()
+            self.close()
+        except Exception as e:
+            self.w = ErrorDialog(e.__str__())
+            self.w.show()
 
     def exit(self):
         self.w = Enter()
@@ -136,6 +139,7 @@ class HostCheck(QDialog):  # проверка пользователя
         self.enterButton.clicked.connect(self.check)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.exitButton.clicked.connect(self.exit)
 
     def check(self):
         login = self.loginEdit.text()
@@ -147,23 +151,25 @@ class HostCheck(QDialog):  # проверка пользователя
                     WHERE login = ?""", (login,)).fetchone()
         try:
             if not(result):
-                raise LoginNotFound()
+                raise LoginError('Владелец не найден')
             if key != result[2]:
-                raise KeyError
+                raise KeyError('Ошибка ключа активации продукта')
             if not(result[1]):
                 cur.execute("""UPDATE Hosts
                 SET password = ?
                 WHERE login = ?""", (password, login))
                 con.commit()
             elif result[1] != password:
-                raise PasswordError
+                raise PasswordError('Неверный пароль')
             con.close()
             self.w = HostInterface()
             self.w.show()
             self.close()
-        except LoginNotFound as login:
-            self.error_lbl.setText(login.__str__())
-        except KeyError as key:
-            self.error_lbl.setText(key.__str__())
-        except PasswordError as password:
-            self.error_lbl.setText(password.__str__())
+        except Exception as e:
+            self.w = ErrorDialog(e.__str__())
+            self.w.show()
+
+    def exit(self):
+        self.w = Enter()
+        self.w.show()
+        self.close()

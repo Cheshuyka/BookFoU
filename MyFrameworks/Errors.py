@@ -1,11 +1,22 @@
-class LoginNotFound(Exception):
-    def __str__(self):
-        return 'Пользователь не найден'
+from PyQt5.QtWidgets import QDialog
+from PyQt5 import uic
+
+
+class LoginError(Exception):
+    pass
+
 
 class PasswordError(Exception):
-    def __str__(self):
-        return 'Неверный пароль'
+    pass
+
 
 class KeyError(Exception):
-    def __str__(self):
-        return 'Неверный ключ активации продукта'
+    pass
+
+
+class ErrorDialog(QDialog):
+    def __init__(self, message):
+        super().__init__()
+        uic.loadUi('UIs/ErrorDialog.ui', self)
+        self.okButton.clicked.connect(self.close)
+        self.error_lbl.setPlainText(message)

@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>310</x>
-     <y>290</y>
+     <y>260</y>
      <width>411</width>
      <height>41</height>
     </rect>
@@ -50,7 +50,7 @@ color: rgba(255, 255, 255, 255);
    <property name="geometry">
     <rect>
      <x>310</x>
-     <y>360</y>
+     <y>380</y>
      <width>411</width>
      <height>41</height>
     </rect>
@@ -118,24 +118,6 @@ background-color: none;
     <string>Войти</string>
    </property>
   </widget>
-  <widget class="QLabel" name="Error_lbl">
-   <property name="geometry">
-    <rect>
-     <x>400</x>
-     <y>750</y>
-     <width>231</width>
-     <height>71</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
   <widget class="QPushButton" name="delete_btn">
    <property name="geometry">
     <rect>
@@ -185,7 +167,7 @@ background-color: none;
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="Error_lbl_2">
+  <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
      <x>430</x>
@@ -206,13 +188,36 @@ background-color: none;
     <string>Авторизация</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="exit_btn">
+   <property name="geometry">
+    <rect>
+     <x>700</x>
+     <y>40</y>
+     <width>51</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../../../../Desktop/exit_icon.jpg</normaloff>../../../../Desktop/exit_icon.jpg</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>60</width>
+     <height>60</height>
+    </size>
+   </property>
+  </widget>
   <zorder>label</zorder>
   <zorder>loginEdit</zorder>
   <zorder>passEdit</zorder>
   <zorder>check_btn</zorder>
-  <zorder>Error_lbl</zorder>
   <zorder>delete_btn</zorder>
-  <zorder>Error_lbl_2</zorder>
+  <zorder>label_3</zorder>
+  <zorder>exit_btn</zorder>
  </widget>
  <resources>
   <include location="../../../../Downloads/background.qrc"/>

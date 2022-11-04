@@ -23,14 +23,82 @@
       <height>861</height>
      </rect>
     </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>Tab 1</string>
+      <string>Books</string>
      </attribute>
+     <widget class="QPushButton" name="findBooksButton">
+      <property name="geometry">
+       <rect>
+        <x>520</x>
+        <y>20</y>
+        <width>211</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Найти</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>80</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLineEdit" name="authorEdit">
+         <property name="placeholderText">
+          <string>Автор</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="nameEdit">
+         <property name="placeholderText">
+          <string>Название</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QTableWidget" name="booksTable">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>150</y>
+        <width>1021</width>
+        <height>681</height>
+       </rect>
+      </property>
+      <property name="rowCount">
+       <number>0</number>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="addBookButton">
+      <property name="geometry">
+       <rect>
+        <x>390</x>
+        <y>110</y>
+        <width>241</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Добавить книгу</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
-      <string>Tab 2</string>
+      <string>Tests</string>
      </attribute>
     </widget>
    </widget>

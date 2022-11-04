@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>503</width>
-    <height>819</height>
+    <height>647</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -170,7 +170,7 @@ color: rgba(255, 255, 255, 200);
      <x>20</x>
      <y>10</y>
      <width>471</width>
-     <height>801</height>
+     <height>621</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -183,8 +183,8 @@ color: rgba(255, 255, 255, 200);
   <widget class="QPushButton" name="exitButton">
    <property name="geometry">
     <rect>
-     <x>430</x>
-     <y>10</y>
+     <x>410</x>
+     <y>20</y>
      <width>61</width>
      <height>61</height>
     </rect>
