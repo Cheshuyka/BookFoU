@@ -3,6 +3,7 @@ import sqlite3
 from MyFrameworks.Interfaces import UserInterface, HostInterface
 from MyFrameworks.Errors import *
 from backgrounds.enterBack import *
+import os
 
 
 class PasswordCheck(QDialog):  # проверка пользователя
@@ -38,9 +39,11 @@ class PasswordCheck(QDialog):  # проверка пользователя
                 con.close()
                 self.w = Enter()  # открываем окно входа
                 self.w.show()
+                os.remove(f'UsersData/_{login}_ALREADYREADBOOKS.txt')
+                os.remove(f'UsersData/_{login}_ALREADYDONETESTS.txt')
                 self.close()
             else:
-                self.w = UserInterface()  # открытие окна пользователя
+                self.w = UserInterface(login)  # открытие окна пользователя
                 self.w.show()
                 self.close()
         except Exception as e:
@@ -115,11 +118,16 @@ class UserAdd(QDialog):  # окно добавления пользовател�
             if result:  # проверка на то, что логин не используется
                 raise LoginError('Логин уже используется')
             cur = con.cursor()
-            cur.execute("""INSERT INTO Users(login, password)
-            VALUES(?, ?)""", (login, password))  # добавляем логин и пароль в БД
+            cur.execute("""INSERT INTO Users(login, password, alreadyReadBooks, doneTests)
+            VALUES(?, ?, ?, ?)""", (login, password, f'UsersData/_{login}_ALREADYREADBOOKS.txt',
+                              f'UsersData/_{login}_DONETESTS.txt'))  # добавляем логин и пароль в БД
             con.commit()
             con.close()
-            self.w = UserInterface()  # открываем окно пользователя
+            f = open(f'UsersData/_{login}_ALREADYREADBOOKS.txt', mode='w', encoding='utf-8')
+            f.close()
+            f = open(f'UsersData/_{login}_ALREADYDONETESTS.txt', mode='w', encoding='utf-8')
+            f.close()
+            self.w = UserInterface(login)  # открываем окно пользователя
             self.w.show()
             self.close()
         except Exception as e:

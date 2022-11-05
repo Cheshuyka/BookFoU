@@ -1,7 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
 from MyFrameworks.WorkWithFiles import WorkWithFiles
-import sqlite3
 
 
 class WriteEssay():
@@ -38,6 +37,7 @@ class ReadTask(QWidget):  # окно для вывода задания для �
         s2 = s1 + '\n\n' + s
         self.taskText.setPlainText(s2)
 
+
 class WriteWindow(QWidget):  # окно для редактирования заметок
     def __init__(self):
         super().__init__()
@@ -58,9 +58,11 @@ class WriteWindow(QWidget):  # окно для редактирования за
 
 
 class ReadWindow(QWidget):  # окно для открытия книги
-    def __init__(self, text_name, file_name):
+    def __init__(self, text_name, file_name, id, login):
         super().__init__()
         uic.loadUi('UIs/TEXT.ui', self)
+        self.login = login
+        self.id = id
         self.text_name = text_name
         self.workerFiles = WorkWithFiles()  # экземпляр класса с функционалом для открытия файлов
         self.save_btn.clicked.connect(self.to_save)
@@ -70,32 +72,31 @@ class ReadWindow(QWidget):  # окно для открытия книги
         self.setWindowTitle(text_name)
         text.close()
         self.read_btn.clicked.connect(self.set_read)
-        con = sqlite3.connect("DBs/Books_db.sqlite")
-        check = con.cursor()
-        result = check.execute("""SELECT alreadyRead FROM Books
-                    WHERE name = ?""", (self.text_name,)).fetchone()
-        con.close()
-        if result[0]:  # если книга уже прочитана
-            self.read_btn.setStyleSheet('background-color: lightgreen; color: white')
-            self.read_btn.setText('Прочитано')
+
+        if self.login is not None:
+            f = open(f'UsersData/_{self.login}_ALREADYREADBOOKS.txt', mode='rt', encoding='utf-8')
+            self.key = list(map(lambda x: x.strip('\n'), f))
+            if str(id) in self.key:  # если книга уже прочитана
+                self.read_btn.setStyleSheet('background-color: lightgreen; color: white')
+                self.read_btn.setText('Прочитано')
+            f.close()
 
     def to_save(self):  # сохранение книги в отдельный файл
         self.workerFiles.SaveFiles(self.textEdit.toPlainText())
 
     def set_read(self):
-        con = sqlite3.connect("DBs/Books_db.sqlite")
-        check = con.cursor()
         if self.read_btn.text() == 'Не прочитано':  # если на книге еще нет отметки 'прочитано'
             self.read_btn.setStyleSheet('background-color: lightgreen; color: white')  # изменяем стиль кнопки
             self.read_btn.setText('Прочитано')
-            check.execute("""UPDATE Books
-                    SET alreadyRead = 1
-                    WHERE name = ?""", (self.text_name,))
+            if self.login is not None:  # если человек вошел через аккаунт владельца, то
+                # данные о прочитанных книгах не сохраняются
+                self.key.append(str(self.id))
+                f = open(f'UsersData/_{self.login}_ALREADYREADBOOKS.txt', mode='w', encoding='utf-8')
+                f.write('\n'.join(self.key))
         else:  # если отметка уже есть
             self.read_btn.setStyleSheet('background-color: white; color: black')
             self.read_btn.setText('Не прочитано')
-            check.execute("""UPDATE Books
-                    SET alreadyRead = 0
-                    WHERE name = ?""", (self.text_name,))
-        con.commit()
-        con.close()
+            if self.login is not None:
+                self.key.remove(str(self.id))
+                f = open(f'UsersData/_{self.login}_ALREADYREADBOOKS.txt', mode='w', encoding='utf-8')
+                f.write('\n'.join(self.key))

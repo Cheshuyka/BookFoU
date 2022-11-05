@@ -1,10 +1,11 @@
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QGroupBox, QLineEdit, QRadioButton
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QGroupBox, QLineEdit, QRadioButton, QTableWidgetItem
 from PyQt5.QtWidgets import QLabel
 import wikipedia
 import warnings
 from PyQt5.QtGui import QPixmap
 from MyFrameworks.ShowResult import Result
 from MyFrameworks.TextWindows import *
+from MyFrameworks.WorkWithDBs import *
 
 
 warnings.catch_warnings()
@@ -12,11 +13,12 @@ warnings.simplefilter("ignore")
 
 
 class UserInterface(QMainWindow):  # интерфейс пользователя
-    def __init__(self):
+    def __init__(self, login):
         super().__init__()
         uic.loadUi('UIs/User.ui', self)
         self.wikiGet.clicked.connect(self.wiki)
         wikipedia.set_lang('ru')  # ставим язык для Википедии
+        self.login = login
 
         self.group = QGroupBox()  # подготавливаем поле для вывода книг
         self.h = QVBoxLayout()
@@ -39,24 +41,10 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
     def findBooks(self):  # вывод книг
         name = self.nameEdit.text()
         authorName = self.authorEdit.text()
-        con = sqlite3.connect("DBs/Authors_db.sqlite")  # получаем id автора из БД
-        cur = con.cursor()
-        author = cur.execute(f"""SELECT * FROM Authors
-                    WHERE name LIKE '%{authorName}%'""").fetchone()
-        con.close()
-        if name and authorName:  # подбираем фильтры для вывода книг
-            wheres = f"WHERE name LIKE '%{name}%' AND author LIKE '%{author[0]}%'"
-        elif name:
-            wheres = f"WHERE name LIKE '%{name}%'"
-        elif authorName:
-            wheres = f"WHERE author LIKE '%{author[0]}%'"
-        else:
-            wheres = ''
-        con = sqlite3.connect("DBs/Books_db.sqlite")  # получаем книги из БД
-        cur = con.cursor()
-        result = cur.execute(f"""SELECT * FROM Books
-                    {wheres}""").fetchall()
-        con.close()
+        result = getBooks(name, authorName)
+        f = open(f'UsersData/_{self.login}_ALREADYREADBOOKS.txt', mode='rt', encoding='utf-8')
+        key = list(map(lambda x: x.strip('\n'), f))
+        f.close()
         for i in reversed(range(self.h.count())):  # очищаем место для вывода книг
             self.h.itemAt(i).widget().setParent(None)
         for book in result:
@@ -67,16 +55,10 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
             v = QVBoxLayout()
             v.addWidget(label)
             name = QLabel(book[1])  # Помещаем название книги в label
-
-            if book[6]:  # если книга уже прочитана, то название книги будет зеленым
+            if str(book[0]) in key:  # если книга уже прочитана, то название книги будет зеленым
                 name.setStyleSheet('color: darkgreen')
             v.addWidget(name)
-            con = sqlite3.connect("DBs/Authors_db.sqlite")  # получаем id автора из БД
-            cur = con.cursor()
-            author = cur.execute(f"""SELECT * FROM Authors
-                        WHERE id = ?""", (book[2],)).fetchone()
-            con.close()
-            v.addWidget(QLabel(author[1]))  # Помещаем имя автора в label
+            v.addWidget(QLabel(book[2]))  # Помещаем имя автора в label
             btn = QPushButton('Читать')
             btn.setObjectName(book[5])  # Кнопку называем ссылкой на текст (понадобится при открытии книги)
             btn.clicked.connect(self.to_openBook)
@@ -114,12 +96,8 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
             self.wikiText.setText('определение слова не найдено')
 
     def to_openBook(self):  # открытие книги в отдельном окне
-        con = sqlite3.connect("DBs/Books_db.sqlite")
-        cur = con.cursor()
-        result = cur.execute(f"""SELECT name, textLink FROM Books
-                    WHERE btnName = '{self.sender().objectName()}'""").fetchone()
-        con.close()
-        self.w = ReadWindow(result[0], result[1])
+        result = open_book(self.sender().objectName())
+        self.w = ReadWindow(result[1], result[2], result[0], self.login)
         self.w.show()
 
     def note(self):  # открытие окна для редактирования заметок
@@ -205,3 +183,28 @@ class HostInterface(QMainWindow):  # интерфейс владельца
     def __init__(self):
         super().__init__()
         uic.loadUi('UIs/Host.ui', self)
+        self.findBooksButton.clicked.connect(self.findBooks)
+
+    def findBooks(self):
+        self.booksTable.setColumnCount(5)
+        self.booksTable.setRowCount(0)
+        name = self.nameEdit.text()
+        authorName = self.authorEdit.text()
+        result = getBooks(name, authorName)
+        for i, row in enumerate(result):
+            row = row[1:]
+            row, btnName = row[:-2], row[4]
+            self.booksTable.setRowCount(self.booksTable.rowCount() + 1)
+            for j, elem in enumerate(row):
+                if j == 2:
+                    elem = QPushButton('Читать')
+                    elem.setObjectName(btnName)
+                    elem.clicked.connect(self.to_openBook)
+                    self.booksTable.setCellWidget(i, j, elem)
+                else:
+                    self.booksTable.setItem(i, j, QTableWidgetItem(str(elem)))
+
+    def to_openBook(self):
+        result = open_book(self.sender().objectName())
+        self.w = ReadWindow(result[1], result[2], result[0], None)
+        self.w.show()
