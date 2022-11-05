@@ -32,7 +32,7 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
         self.v = QVBoxLayout()
         self.scrollTests.setLayout(self.v)
         self.findTest_btn.clicked.connect(self.findTests)
-        self.update_btn.clicked.connect(self.showMadeTests)
+        self.findMadeTest_btn.clicked.connect(self.showMadeTests)
 
         self.findBooks()  # выводим все книги
         self.findTests()  # выводим все тесты
@@ -86,7 +86,23 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
             self.v.addWidget(btn)
 
     def showMadeTests(self):
-        pass
+        self.testsTable.setColumnCount(5)
+        self.testsTable.setRowCount(0)
+        name = self.madeTestName.text()
+        if name:
+            wheres = f"WHERE testName LIKE '%{name}%'"
+        else:
+            wheres = ''
+        f = open(f'UsersData/_{self.login}_ALREADYDONETESTS.txt', mode='rt', encoding='utf-8')
+        result = list(map(lambda x: x.strip('\n'), f.readlines()))
+        con = sqlite3.connect("DBs/Tests_db.sqlite")  # получаем тесты из БД
+        cur = con.cursor()
+        for i in range(len(result)):
+            res = cur.execute(f"""SELECT testName FROM Tests
+                        WHERE testLink = ?""", (result[i].split(':')[0], )).fetchone()
+            result[i] = res[0] + ':' + result[i].split(':')[1]
+        con.close()
+        print(result)
 
     def wiki(self):  # вывод определения слова
         try:
@@ -109,14 +125,16 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
 
     def show_test(self):
         name = self.sender().objectName()
-        self.w = Test(name)
+        self.w = Test(name, self.login)
         self.w.show()
 
 
 class Test(QWidget):
-    def __init__(self, file):
+    def __init__(self, file, login):
         super().__init__()
         uic.loadUi('UIs/Test.ui', self)
+        self.login = login
+        self.file = file
         self.h = QVBoxLayout()
         self.answer_btn.clicked.connect(self.next)
         self.answer_btn.setStyleSheet('background-color: lightgreen; color: white')
@@ -128,6 +146,11 @@ class Test(QWidget):
         f = open(file, mode="rt", encoding='utf-8')
         self.key = list(map(lambda x: x.strip('\n'), f.readlines()))
         f.close()
+        f = open(f'UsersData/_{self.login}_ALREADYDONETESTS.txt', mode='rt', encoding='utf-8')
+        self.res = list(map(lambda x: x.strip('\n'), f))
+        f.close()
+        self.results = list(map(lambda x: file in x, self.res))
+
         self.all = (len(self.key) - 1) // 2
         self.percent = 100 // self.all
         self.progress = 0
@@ -172,7 +195,13 @@ class Test(QWidget):
             pass
         self.key = self.key[2:]
         if self.key[0] == 'END':
-            self.w = Result(self.correct, self.all - self.correct - self.skipped, self.skipped)
+            if not(self.results):
+                self.results = None
+            else:
+                self.results = self.results[0]
+            incorrect = self.all - self.correct - self.skipped
+            self.w = Result(self.correct, incorrect, self.skipped, f'UsersData/_{self.login}_ALREADYDONETESTS.txt',
+                            self.file)
             self.w.show()
             self.close()
         else:

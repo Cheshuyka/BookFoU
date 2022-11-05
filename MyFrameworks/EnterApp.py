@@ -120,7 +120,7 @@ class UserAdd(QDialog):  # окно добавления пользовател�
             cur = con.cursor()
             cur.execute("""INSERT INTO Users(login, password, alreadyReadBooks, doneTests)
             VALUES(?, ?, ?, ?)""", (login, password, f'UsersData/_{login}_ALREADYREADBOOKS.txt',
-                              f'UsersData/_{login}_DONETESTS.txt'))  # добавляем логин и пароль в БД
+            f'UsersData/_{login}_DONETESTS.txt'))  # добавляем логин и пароль в БД
             con.commit()
             con.close()
             f = open(f'UsersData/_{login}_ALREADYREADBOOKS.txt', mode='w', encoding='utf-8')
