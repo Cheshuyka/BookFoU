@@ -33,6 +33,8 @@ class Result(QMainWindow):  # класс для вывода диаграммы 
                 results.remove(res)
                 results.append(f'{name}:{a}%')
                 f.write('\n'.join(results))
+            else:
+                f.write('\n'.join(results))
         else:
             results.append(f'{name}:{a}%')
             f.write('\n'.join(results))

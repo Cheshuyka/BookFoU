@@ -86,23 +86,28 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
             self.v.addWidget(btn)
 
     def showMadeTests(self):
-        self.testsTable.setColumnCount(5)
+        self.testsTable.setColumnCount(3)
         self.testsTable.setRowCount(0)
         name = self.madeTestName.text()
-        if name:
-            wheres = f"WHERE testName LIKE '%{name}%'"
-        else:
-            wheres = ''
         f = open(f'UsersData/_{self.login}_ALREADYDONETESTS.txt', mode='rt', encoding='utf-8')
-        result = list(map(lambda x: x.strip('\n'), f.readlines()))
+        result = list(filter(lambda x: name in x, list(map(lambda x: x.strip('\n'), f.readlines()))))
+        s = result.copy()
         con = sqlite3.connect("DBs/Tests_db.sqlite")  # получаем тесты из БД
         cur = con.cursor()
         for i in range(len(result)):
             res = cur.execute(f"""SELECT testName FROM Tests
                         WHERE testLink = ?""", (result[i].split(':')[0], )).fetchone()
             result[i] = res[0] + ':' + result[i].split(':')[1]
+        for i in range(len(result)):
+            self.testsTable.setRowCount(self.testsTable.rowCount() + 1)
+            res = result[i].split(':')
+            self.testsTable.setItem(i, 0, QTableWidgetItem(str(res[0])))
+            self.testsTable.setItem(i, 1, QTableWidgetItem(str(res[1])))
+            btn = QPushButton('Выполнить')
+            btn.setObjectName(s[i].split(':')[0])
+            btn.clicked.connect(self.show_test)
+            self.testsTable.setCellWidget(i, 2, btn)
         con.close()
-        print(result)
 
     def wiki(self):  # вывод определения слова
         try:
@@ -213,6 +218,7 @@ class HostInterface(QMainWindow):  # интерфейс владельца
         super().__init__()
         uic.loadUi('UIs/Host.ui', self)
         self.findBooksButton.clicked.connect(self.findBooks)
+        self.addBookButton.clicked.connect(self.addBook)
 
     def findBooks(self):
         self.booksTable.setColumnCount(5)
@@ -232,6 +238,9 @@ class HostInterface(QMainWindow):  # интерфейс владельца
                     self.booksTable.setCellWidget(i, j, elem)
                 else:
                     self.booksTable.setItem(i, j, QTableWidgetItem(str(elem)))
+
+    def addBook(self):
+        pass
 
     def to_openBook(self):
         result = open_book(self.sender().objectName())
