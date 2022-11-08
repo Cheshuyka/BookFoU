@@ -7,6 +7,7 @@ from MyFrameworks.ShowResult import Result
 from MyFrameworks.TextWindows import *
 from MyFrameworks.WorkWithDBs import *
 from MyFrameworks.HostWork import *
+import os
 
 
 warnings.catch_warnings()
@@ -222,6 +223,10 @@ class HostInterface(QMainWindow):  # интерфейс владельца
         self.addBookButton.clicked.connect(self.addBook)
         self.findAuthorButton.clicked.connect(self.findAuthors)
         self.addAuthorButton.clicked.connect(self.addAuthor)
+        self.findUserButton.clicked.connect(self.findUsers)
+        self.findBooks()
+        self.findAuthors()
+        self.findUsers()
 
     def findBooks(self):
         self.booksTable.setColumnCount(5)
@@ -267,7 +272,40 @@ class HostInterface(QMainWindow):  # интерфейс владельца
         cur = con.cursor()
         result = cur.execute(f"""SELECT * FROM Authors
                     {wheres}""").fetchall()
+        con.close()
         for i, row in enumerate(result):
             self.authorsTable.setRowCount(self.authorsTable.rowCount() + 1)
             for j, elem in enumerate(row):
                 self.authorsTable.setItem(i, j, QTableWidgetItem(str(elem)))
+
+    def findUsers(self):
+        self.usersTable.setColumnCount(3)
+        self.usersTable.setRowCount(0)
+        user = self.userEdit.text()
+        if user == '':
+            wheres = ''
+        else:
+            wheres = f"WHERE login LIKE '%{user}%'"
+        con = sqlite3.connect('DBs/Users_db.sqlite')
+        cur = con.cursor()
+        result = cur.execute(f"""SELECT login, password FROM Users
+                            {wheres}""").fetchall()
+        con.close()
+        for i, row in enumerate(result):
+            self.usersTable.setRowCount(self.usersTable.rowCount() + 1)
+            self.usersTable.setItem(i, 0, QTableWidgetItem(str(row[0])))
+            self.usersTable.setItem(i, 1, QTableWidgetItem(str(row[1])))
+            btn = QPushButton('Удалить')
+            btn.setObjectName(row[0])
+            btn.clicked.connect(self.deleteUser)
+            self.usersTable.setCellWidget(i, 2, btn)
+
+    def deleteUser(self):
+        con = sqlite3.connect("DBs/Users_db.sqlite")
+        cur = con.cursor()
+        cur.execute("""DELETE FROM Users
+        WHERE login = ?""", (self.sender().objectName(), ))  # удаляем пользователя
+        con.commit()
+        con.close()
+        os.remove(f'UsersData/_{self.sender().objectName()}_ALREADYREADBOOKS.txt')
+        os.remove(f'UsersData/_{self.sender().objectName()}_ALREADYDONETESTS.txt')
