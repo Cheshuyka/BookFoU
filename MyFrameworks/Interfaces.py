@@ -6,6 +6,7 @@ from PyQt5.QtGui import QPixmap
 from MyFrameworks.ShowResult import Result
 from MyFrameworks.TextWindows import *
 from MyFrameworks.WorkWithDBs import *
+from MyFrameworks.HostWork import *
 
 
 warnings.catch_warnings()
@@ -219,6 +220,8 @@ class HostInterface(QMainWindow):  # интерфейс владельца
         uic.loadUi('UIs/Host.ui', self)
         self.findBooksButton.clicked.connect(self.findBooks)
         self.addBookButton.clicked.connect(self.addBook)
+        self.findAuthorButton.clicked.connect(self.findAuthors)
+        self.addAuthorButton.clicked.connect(self.addAuthor)
 
     def findBooks(self):
         self.booksTable.setColumnCount(5)
@@ -240,9 +243,31 @@ class HostInterface(QMainWindow):  # интерфейс владельца
                     self.booksTable.setItem(i, j, QTableWidgetItem(str(elem)))
 
     def addBook(self):
-        pass
+        self.w = AddBook()
+        self.w.show()
+
+    def addAuthor(self):
+        self.w = AddAuthor()
+        self.w.show()
 
     def to_openBook(self):
         result = open_book(self.sender().objectName())
         self.w = ReadWindow(result[1], result[2], result[0], None)
         self.w.show()
+
+    def findAuthors(self):
+        self.authorsTable.setColumnCount(2)
+        self.authorsTable.setRowCount(0)
+        authorName = self.authorNameEdit.text()
+        if authorName == '':
+            wheres = ''
+        else:
+            wheres = f"WHERE name LIKE '%{authorName}%'"
+        con = sqlite3.connect('DBs/Authors_db.sqlite')
+        cur = con.cursor()
+        result = cur.execute(f"""SELECT * FROM Authors
+                    {wheres}""").fetchall()
+        for i, row in enumerate(result):
+            self.authorsTable.setRowCount(self.authorsTable.rowCount() + 1)
+            for j, elem in enumerate(row):
+                self.authorsTable.setItem(i, j, QTableWidgetItem(str(elem)))

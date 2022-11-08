@@ -12,10 +12,17 @@ class WorkWithFiles(QWidget):  # класс для работы с файлам�
         except FileNotFoundError:
             pass
 
-    def OpenFiles(self):  # открытие файла
+    def OpenFiles(self, type='Текст', to_return='Текст'):  # открытие файла
         try:
-            fname = QFileDialog.getOpenFileName(self, 'Выбрать текст', '')[0]
-            with open(fname, mode='rt', encoding='utf-8') as writing:
-                return writing.read()
+            if type == 'Текст':
+                fname = QFileDialog.getOpenFileName(self, 'Выбрать текст', '')[0]
+                if to_return == 'Текст':
+                    with open(fname, mode='rt', encoding='utf-8') as writing:
+                        return writing.read()
+                elif to_return == 'Имя':
+                    return fname
+            elif type == 'Картинка':
+                fname = QFileDialog.getOpenFileName(self, 'Выбрать картинку', '')[0]
+                return fname
         except FileNotFoundError:
             pass

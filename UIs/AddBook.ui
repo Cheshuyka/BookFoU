@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>931</width>
-    <height>814</height>
+    <width>699</width>
+    <height>783</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,7 +64,7 @@
    <property name="geometry">
     <rect>
      <x>220</x>
-     <y>750</y>
+     <y>690</y>
      <width>181</width>
      <height>41</height>
     </rect>
@@ -86,23 +86,7 @@
     <string/>
    </property>
    <property name="placeholderText">
-    <string>Название</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="btnNameEdit">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>690</y>
-     <width>501</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="placeholderText">
-    <string>Придумайте название кнопки (латиница без пробелов)</string>
+    <string>Название книги</string>
    </property>
   </widget>
   <widget class="QPushButton" name="chooseText_btn">
@@ -118,17 +102,20 @@
     <string>Выбрать txt файл с текстом книги</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="chooseAuthor_btn_">
+  <widget class="QLineEdit" name="authorEdit">
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>570</y>
+     <y>580</y>
      <width>501</width>
-     <height>41</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="text">
-    <string>Выбрать автора</string>
+    <string/>
+   </property>
+   <property name="placeholderText">
+    <string>ID автора</string>
    </property>
   </widget>
  </widget>

@@ -27,9 +27,9 @@ class PasswordCheck(QDialog):  # проверка пользователя
         con.close()
         try:
             if not(result): # пользователь не найден
-                raise LoginError('Пользователь не найден')
+                raise Exception('Пользователь не найден')
             if result[1] != password:  # неверный пароль
-                raise PasswordError('Неверный пароль')
+                raise Exception('Неверный пароль')
             if self.sender().text() == 'Удалить пользователя':
                 con = sqlite3.connect("DBs/Users_db.sqlite")
                 cur = con.cursor()
@@ -106,17 +106,17 @@ class UserAdd(QDialog):  # окно добавления пользовател�
         repeat = self.passRepeat.text()
         try:
             if not(password):  # если пароль пуст
-                raise PasswordError('Пароль пуст')
+                raise Exception('Пароль пуст')
             if not(login):
-                raise LoginError('Логин пуст')
+                raise Exception('Логин пуст')
             if password != repeat:  # пароли не совпадают
-                raise PasswordError('Пароли не совпадают')
+                raise Exception('Пароли не совпадают')
             con = sqlite3.connect("DBs/Users_db.sqlite")
             check = con.cursor()
             result = check.execute("""SELECT * FROM Users
                         WHERE login = ?""", (login,)).fetchall()
             if result:  # проверка на то, что логин не используется
-                raise LoginError('Логин уже используется')
+                raise Exception('Логин уже используется')
             cur = con.cursor()
             cur.execute("""INSERT INTO Users(login, password, alreadyReadBooks, doneTests)
             VALUES(?, ?, ?, ?)""", (login, password, f'UsersData/_{login}_ALREADYREADBOOKS.txt',
@@ -159,7 +159,7 @@ class HostCheck(QDialog):  # проверка пользователя
                     WHERE login = ?""", (login,)).fetchone()
         try:
             if not(result):
-                raise LoginError('Владелец не найден')
+                raise Exception('Владелец не найден')
             if key != result[2]:
                 raise KeyError('Ошибка ключа активации продукта')
             if not(result[1]):
@@ -168,7 +168,7 @@ class HostCheck(QDialog):  # проверка пользователя
                 WHERE login = ?""", (password, login))
                 con.commit()
             elif result[1] != password:
-                raise PasswordError('Неверный пароль')
+                raise Exception('Неверный пароль')
             con.close()
             self.w = HostInterface()
             self.w.show()
