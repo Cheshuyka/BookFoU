@@ -224,9 +224,11 @@ class HostInterface(QMainWindow):  # интерфейс владельца
         self.findAuthorButton.clicked.connect(self.findAuthors)
         self.addAuthorButton.clicked.connect(self.addAuthor)
         self.findUserButton.clicked.connect(self.findUsers)
+        self.addEssayButton.clicked.connect(self.addEssay)
         self.findBooks()
         self.findAuthors()
         self.findUsers()
+        self.findEssays()
 
     def findBooks(self):
         self.booksTable.setColumnCount(5)
@@ -310,3 +312,30 @@ class HostInterface(QMainWindow):  # интерфейс владельца
         os.remove(f'UsersData/_{self.sender().objectName()}_ALREADYREADBOOKS.txt')
         os.remove(f'UsersData/_{self.sender().objectName()}_ALREADYDONETESTS.txt')
         os.remove(f'UsersData/_{self.sender().objectName()}_LASTWRITTEN.txt')
+
+    def findEssays(self):
+        self.essaysTable.setColumnCount(1)
+        self.essaysTable.setRowCount(0)
+        n = 0
+        while True:
+            try:
+                n += 1
+                f = open(f'Essays/Essay {n}.txt', mode='rt', encoding='utf-8')  # если файл не найден, то прервется цикл
+                f.close()
+                self.essaysTable.setRowCount(self.essaysTable.rowCount() + 1)
+                btn = QPushButton(f'Сочинение {n}')
+                btn.clicked.connect(self.openEssay)
+                btn.setObjectName(f'Essays/Essay {n}.txt')
+                self.essaysTable.setCellWidget(n - 1, 0, btn)
+            except FileNotFoundError:
+                break
+
+    def openEssay(self):
+        f = open(self.sender().objectName(), mode='rt', encoding='utf-8')
+        key = f.read()
+        f.close()
+        self.essayText.setPlainText(key)
+
+    def addEssay(self):
+        self.w = AddEssay()
+        self.w.show()

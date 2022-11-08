@@ -52,19 +52,20 @@ class AddBook(QWidget):  # интерфейс владельца
             cur = con.cursor()
             bookID = str(cur.execute("""SELECT MAX(id) FROM Books""").fetchone()[0] + 1)
             con.close()
-            shutil.copyfile(self.cover, f'covers/{bookID}.jpg')
-            shutil.copyfile(self.text, f'texts/{bookID}.txt')
             con = sqlite3.connect('DBs/Books_db.sqlite')
             cur = con.cursor()
             cur.execute("""INSERT INTO Books(name, author, textLink, coverLink, btnName)
                 VALUES(?, ?, ?, ?, ?)""", (name, author, f'texts/{bookID}.txt', f'covers/{bookID}.jpg', bookID))
             con.commit()
             con.close()
+            shutil.copyfile(self.cover, f'covers/{bookID}.jpg')
+            shutil.copyfile(self.text, f'texts/{bookID}.txt')
+            self.close()
         except ValueError:
             self.w = ErrorDialog('ID автора не целое число')
             self.w.show()
-        except Exception as e:
-            self.w = ErrorDialog(e.__str__())
+        except sqlite3.IntegrityError:
+            self.w = ErrorDialog('Такая книга уже существует')
             self.w.show()
 
     def chooseText(self):
@@ -101,3 +102,29 @@ class AddAuthor(QWidget):  # интерфейс владельца
         except Exception as e:
             self.w = ErrorDialog(e.__str__())
             self.w.show()
+
+
+class AddEssay(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('UIs/AddEssay.ui', self)
+        self.openTextButton.clicked.connect(self.openFile)
+        self.addTextButton.clicked.connect(self.addText)
+        self.workerFiles = WorkWithFiles()
+
+    def openFile(self):
+        self.textEdit.setPlainText(self.workerFiles.OpenFiles())
+
+    def addText(self):
+        n = 0
+        while True:
+            try:
+                n += 1
+                f = open(f'Essays/Essay {n}.txt', mode='rt', encoding='utf-8')  # если файл не найден, то прервется цикл
+                f.close()
+            except FileNotFoundError:
+                break
+        f = open(f'Essays/Essay {n}.txt', mode='w', encoding='utf-8')
+        f.write(self.textEdit.toPlainText())
+        f.close()
+        self.close()
