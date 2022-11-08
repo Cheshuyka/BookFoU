@@ -4,38 +4,62 @@ from MyFrameworks.WorkWithFiles import WorkWithFiles
 
 
 class WriteEssay():
-    def __init__(self):
+    def __init__(self, login):
         self.write = WriteWindow()
-        self.read = ReadTask()
+        self.read = ReadTask(login)
         self.write.show()
         self.read.show()
 
 
 class ReadTask(QWidget):  # окно для вывода задания для сочинения
-    def __init__(self):
+    def __init__(self, login):
         super().__init__()
         uic.loadUi('UIs/ReadTask.ui', self)
         self.save.clicked.connect(self.to_saveFile)
         self.workerFiles = WorkWithFiles()
-        self.getTheme.clicked.connect(self.theme)
+        self.lastTheme.clicked.connect(self.changeTheme)
+        self.nextTheme.clicked.connect(self.changeTheme)
         self.tableWidget.verticalHeader().setVisible(True)
+        self.login = login
+        self.theme()
 
     def to_saveFile(self):  # сохранение файла
         self.workerFiles.SaveFiles(self.taskText.toPlainText())
 
     def theme(self):
-        f = open('Essays/LastWritten.txt', mode='rt', encoding='utf-8')
+        f = open(f'UsersData/_{self.login}_LASTWRITTEN.txt', mode='rt', encoding='utf-8')
         key = f.read()
         f.close()
-        f = open('Essays/LastWritten.txt', mode='w', encoding='utf-8')
-        f.write(str(int(key) + 1))
-        f.close()
-        g = open(f'Essays/Essay {key}.txt', mode='rt', encoding='utf-8')
+        try:
+            g = open(f'Essays/Essay {key}.txt', mode='rt', encoding='utf-8')
+        except FileNotFoundError:
+            if key == '0':
+                f = open(f'UsersData/_{self.login}_LASTWRITTEN.txt', mode='w', encoding='utf-8')
+                f.write(str(int(key) + 1))
+                f.close()
+                g = open(f'Essays/Essay {int(key) + 1}.txt', mode='rt', encoding='utf-8')
+            else:
+                f = open(f'UsersData/_{self.login}_LASTWRITTEN.txt', mode='w', encoding='utf-8')
+                f.write(str(int(key) - 1))
+                f.close()
+                g = open(f'Essays/Essay {int(key) - 1}.txt', mode='rt', encoding='utf-8')
         s = g.read()
         g1 = open('Essays/Task.txt', mode='rt', encoding='utf-8')
         s1 = g1.read()
         s2 = s1 + '\n\n' + s
         self.taskText.setPlainText(s2)
+
+    def changeTheme(self):
+        f = open(f'UsersData/_{self.login}_LASTWRITTEN.txt', mode='rt', encoding='utf-8')
+        key = f.read()
+        f.close()
+        f = open(f'UsersData/_{self.login}_LASTWRITTEN.txt', mode='w', encoding='utf-8')
+        if self.sender().text() == '>':
+            f.write(str(int(key) + 1))
+        else:
+            f.write(str(int(key) - 1))
+        f.close()
+        self.theme()
 
 
 class WriteWindow(QWidget):  # окно для редактирования заметок

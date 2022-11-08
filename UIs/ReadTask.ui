@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -42,19 +42,6 @@
       <string>Save</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="getTheme">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>0</y>
-       <width>111</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Theme</string>
-     </property>
-    </widget>
     <widget class="QTextEdit" name="taskText">
      <property name="geometry">
       <rect>
@@ -68,27 +55,30 @@
       <bool>true</bool>
      </property>
     </widget>
-   </widget>
-   <widget class="QWidget" name="tab_2">
-    <attribute name="title">
-     <string>Подсказки</string>
-    </attribute>
-    <widget class="QTextBrowser" name="textBrowser">
+    <widget class="QPushButton" name="lastTheme">
      <property name="geometry">
       <rect>
-       <x>0</x>
+       <x>110</x>
        <y>0</y>
-       <width>1241</width>
-       <height>631</height>
+       <width>111</width>
+       <height>51</height>
       </rect>
      </property>
-     <property name="html">
-      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Подсказки по написанию сочинения (&lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-style:italic; text-decoration: underline;&quot;&gt;в соответствии с 27 заданием по русскому языку из ЕГЭ&lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <property name="text">
+      <string>&lt;</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="nextTheme">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>0</y>
+       <width>111</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&gt;</string>
      </property>
     </widget>
    </widget>

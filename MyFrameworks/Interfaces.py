@@ -128,7 +128,7 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
         self.write.show()
 
     def essay(self):  # открытие окна для написания сочинений
-        self.w = WriteEssay()
+        self.w = WriteEssay(self.login)
 
     def show_test(self):
         name = self.sender().objectName()
@@ -309,3 +309,4 @@ class HostInterface(QMainWindow):  # интерфейс владельца
         con.close()
         os.remove(f'UsersData/_{self.sender().objectName()}_ALREADYREADBOOKS.txt')
         os.remove(f'UsersData/_{self.sender().objectName()}_ALREADYDONETESTS.txt')
+        os.remove(f'UsersData/_{self.sender().objectName()}_LASTWRITTEN.txt')

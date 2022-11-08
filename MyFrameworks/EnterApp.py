@@ -41,6 +41,7 @@ class PasswordCheck(QDialog):  # проверка пользователя
                 self.w.show()
                 os.remove(f'UsersData/_{login}_ALREADYREADBOOKS.txt')
                 os.remove(f'UsersData/_{login}_ALREADYDONETESTS.txt')
+                os.remove(f'UsersData/_{login}_LASTWRITTEN.txt')
                 self.close()
             else:
                 self.w = UserInterface(login)  # открытие окна пользователя
@@ -118,14 +119,16 @@ class UserAdd(QDialog):  # окно добавления пользовател�
             if result:  # проверка на то, что логин не используется
                 raise Exception('Логин уже используется')
             cur = con.cursor()
-            cur.execute("""INSERT INTO Users(login, password, alreadyReadBooks, doneTests)
-            VALUES(?, ?, ?, ?)""", (login, password, f'UsersData/_{login}_ALREADYREADBOOKS.txt',
-            f'UsersData/_{login}_DONETESTS.txt'))  # добавляем логин и пароль в БД
+            cur.execute("""INSERT INTO Users(login, password)
+            VALUES(?, ?)""", (login, password))  # добавляем логин и пароль в БД
             con.commit()
             con.close()
             f = open(f'UsersData/_{login}_ALREADYREADBOOKS.txt', mode='w', encoding='utf-8')
             f.close()
             f = open(f'UsersData/_{login}_ALREADYDONETESTS.txt', mode='w', encoding='utf-8')
+            f.close()
+            f = open(f'UsersData/_{login}_LASTWRITTEN.txt', mode='w', encoding='utf-8')
+            f.write('1')
             f.close()
             self.w = UserInterface(login)  # открываем окно пользователя
             self.w.show()
