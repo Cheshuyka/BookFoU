@@ -21,7 +21,7 @@ class Result(QMainWindow):  # класс для вывода диаграммы 
         chart.setTitle("Результат теста")
         chartview = QChartView(chart)
         self.setCentralWidget(chartview)
-        f = open(file, mode='rt', encoding='utf-8')
+        f = open(file, mode='rt', encoding='utf-8')  # добавляем результат теста в файл пользователя
         results = list(map(lambda x: x.strip('\n'), f))
         res = list(filter(lambda x: name in x, results))
         f.close()

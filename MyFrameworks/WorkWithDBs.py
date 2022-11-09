@@ -29,7 +29,7 @@ def getBooks(name, authorName):
     con.close()
     return result
 
-def open_book(btnName):
+def open_book(btnName):  # получаем данные о книге
     con = sqlite3.connect("DBs/Books_db.sqlite")
     cur = con.cursor()
     result = cur.execute(f"""SELECT id, name, textLink FROM Books

@@ -13,8 +13,8 @@ class PasswordCheck(QDialog):  # проверка пользователя
         self.check_btn.clicked.connect(self.check)
         self.loginEdit.setText(login)
         self.delete_btn.clicked.connect(self.check)
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)  # убираем рамку окна
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)  # убираем незаполненный background
         self.exit_btn.clicked.connect(self.exit)
 
     def check(self):
@@ -53,7 +53,7 @@ class PasswordCheck(QDialog):  # проверка пользователя
             self.w = ErrorDialog(e.__str__())
             self.w.show()
 
-    def exit(self):
+    def exit(self):  # выход из окна
         self.w = Enter()
         self.w.show()
         self.close()
@@ -89,7 +89,7 @@ class Enter(QDialog):  # окно для входа в программу
         self.w.show()
         self.close()
 
-    def openHostCheck(self):
+    def openHostCheck(self):  # открываем окно для входа как владельца
         self.w = HostCheck()
         self.w.show()
         self.close()
@@ -139,7 +139,7 @@ class UserAdd(QDialog):  # окно добавления пользовател�
             self.w = ErrorDialog(e.__str__())
             self.w.show()
 
-    def exit(self):
+    def exit(self):  # выход из окна
         self.w = Enter()
         self.w.show()
         self.close()
@@ -163,11 +163,14 @@ class HostCheck(QDialog):  # проверка пользователя
         result = cur.execute("""SELECT * FROM Hosts
                     WHERE login = ?""", (login,)).fetchone()
         try:
+            if not(password):
+                raise Exception('Пароль не указан')
             if not(result):
                 raise Exception('Владелец не найден')
             if key != result[2]:
                 raise KeyError('Ошибка ключа активации продукта')
-            if not(result[1]):
+            if not(result[1]):  # если пароль раньше не был указан, то в БД отправляется пароль указанный
+                # новоиспеченным владельцем
                 cur.execute("""UPDATE Hosts
                 SET password = ?
                 WHERE login = ?""", (password, login))

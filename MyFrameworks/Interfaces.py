@@ -2,9 +2,7 @@ from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QGroupBox, QL
 from PyQt5.QtWidgets import QLabel
 import wikipedia
 import warnings
-from PyQt5.QtGui import QPixmap
 from MyFrameworks.ShowResult import Result
-from MyFrameworks.TextWindows import *
 from MyFrameworks.WorkWithDBs import *
 from MyFrameworks.HostWork import *
 import os
@@ -136,7 +134,7 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
         self.w.show()
 
 
-class Test(QWidget):
+class Test(QWidget):  # окно теста
     def __init__(self, file, login):
         super().__init__()
         uic.loadUi('UIs/Test.ui', self)
@@ -158,12 +156,12 @@ class Test(QWidget):
         f.close()
         self.results = list(map(lambda x: file in x, self.res))
 
-        self.all = (len(self.key) - 1) // 2
-        self.percent = 100 // self.all
-        self.progress = 0
+        self.all = (len(self.key) - 1) // 2  # количество вопросов
+        self.percent = 100 // self.all  # кол-во процентов за один вопрос
+        self.progress = 0  # для progressBar
         self.show_test()
 
-    def show_test(self):
+    def show_test(self):  # показ вопроса теста
         self.progressBar.setValue(self.progress)
         for i in reversed(range(self.h.count())):
             self.h.itemAt(i).widget().setParent(None)
@@ -180,7 +178,7 @@ class Test(QWidget):
                 btn = QRadioButton(i)
                 self.h.addWidget(btn)
 
-    def next(self):
+    def next(self):  # обработка ответов
         self.progress += self.percent
         type = self.key[0][0]
         answer = None
@@ -196,6 +194,7 @@ class Test(QWidget):
         except AssertionError:
             pass
         try:
+            assert answer
             assert answer.lower() == self.key[1].lower()
             self.correct += 1
         except AssertionError:
@@ -231,8 +230,8 @@ class HostInterface(QMainWindow):  # интерфейс владельца
         self.findUsers()
         self.findEssays()
 
-    def findBooks(self):
-        self.booksTable.setColumnCount(5)
+    def findBooks(self):  # вывод книг
+        self.booksTable.setColumnCount(3)
         self.booksTable.setRowCount(0)
         name = self.nameEdit.text()
         authorName = self.authorEdit.text()
@@ -250,20 +249,20 @@ class HostInterface(QMainWindow):  # интерфейс владельца
                 else:
                     self.booksTable.setItem(i, j, QTableWidgetItem(str(elem)))
 
-    def addBook(self):
+    def addBook(self):  # добавление книги
         self.w = AddBook()
         self.w.show()
 
-    def addAuthor(self):
+    def addAuthor(self):  # добавление автора
         self.w = AddAuthor()
         self.w.show()
 
-    def to_openBook(self):
+    def to_openBook(self):  # открытие книги
         result = open_book(self.sender().objectName())
         self.w = ReadWindow(result[1], result[2], result[0], None)
         self.w.show()
 
-    def findAuthors(self):
+    def findAuthors(self):  # найти атвора
         self.authorsTable.setColumnCount(2)
         self.authorsTable.setRowCount(0)
         authorName = self.authorNameEdit.text()
@@ -281,7 +280,7 @@ class HostInterface(QMainWindow):  # интерфейс владельца
             for j, elem in enumerate(row):
                 self.authorsTable.setItem(i, j, QTableWidgetItem(str(elem)))
 
-    def findUsers(self):
+    def findUsers(self):  # найти пользователей
         self.usersTable.setColumnCount(3)
         self.usersTable.setRowCount(0)
         user = self.userEdit.text()
@@ -303,7 +302,7 @@ class HostInterface(QMainWindow):  # интерфейс владельца
             btn.clicked.connect(self.deleteUser)
             self.usersTable.setCellWidget(i, 2, btn)
 
-    def deleteUser(self):
+    def deleteUser(self):  # удаление пользователя
         con = sqlite3.connect("DBs/Users_db.sqlite")
         cur = con.cursor()
         cur.execute("""DELETE FROM Users
@@ -314,7 +313,7 @@ class HostInterface(QMainWindow):  # интерфейс владельца
         os.remove(f'UsersData/_{self.sender().objectName()}_ALREADYDONETESTS.txt')
         os.remove(f'UsersData/_{self.sender().objectName()}_LASTWRITTEN.txt')
 
-    def findEssays(self):
+    def findEssays(self):  # поиск текстов сочинений
         self.essaysTable.setColumnCount(1)
         self.essaysTable.setRowCount(0)
         n = 0
@@ -331,16 +330,16 @@ class HostInterface(QMainWindow):  # интерфейс владельца
             except FileNotFoundError:
                 break
 
-    def openEssay(self):
+    def openEssay(self):  # открытие текста сочинения
         f = open(self.sender().objectName(), mode='rt', encoding='utf-8')
         key = f.read()
         f.close()
         self.essayText.setPlainText(key)
 
-    def addEssay(self):
+    def addEssay(self):  # добавление задания для сочинения
         self.w = AddEssay()
         self.w.show()
 
-    def addTest(self):
+    def addTest(self):  # добавление теста
         self.w = AddTest()
         self.w.show()
