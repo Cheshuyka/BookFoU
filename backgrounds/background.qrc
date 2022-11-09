@@ -1,8 +1,0 @@
-<RCC>
-  <qresource prefix="image">
-    <file>meduza.jpg</file>
-    <file>sea.jpg</file>
-    <file>mountains.jpg</file>
-    <file>enter_background.jpg</file>
-  </qresource>
-</RCC>
