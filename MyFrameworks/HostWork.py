@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QGroupBox, QLineEdit, QRadioButton, QTableWidgetItem
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLabel, QTableWidget, QMessageBox
 import wikipedia
 import warnings
 from PyQt5.QtGui import QPixmap
@@ -10,6 +10,7 @@ from MyFrameworks.WorkWithFiles import WorkWithFiles
 import shutil
 import sqlite3
 from MyFrameworks.Errors import *
+from PyQt5.QtCore import Qt
 
 
 class AddBook(QWidget):  # интерфейс владельца
@@ -128,3 +129,82 @@ class AddEssay(QWidget):
         f.write(self.textEdit.toPlainText())
         f.close()
         self.close()
+
+
+class AddTest(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('UIs/AddTest.ui', self)
+        self.testAddTable.setRowCount(0)
+        self.addQuestionButton.clicked.connect(self.addQuestion)
+        self.testAddTable.resizeColumnToContents(1)
+
+    def addQuestion(self):
+        self.testAddTable.setRowCount(self.testAddTable.rowCount() + 1)
+
+    def keyPressEvent(self, event):
+        if int(event.modifiers()) == (Qt.AltModifier + Qt.ShiftModifier):
+            if event.key() == Qt.Key_S:
+                if self.validTable():
+                    self.saveTest()
+        elif event.key() == Qt.Key_Delete:
+            self.delete_items()
+
+    def delete_items(self):
+        rows = list(set([i.row() + 1 for i in self.testAddTable.selectedItems()]))
+        rows = list(map(lambda x: str(x), sorted(rows)))
+        answer = QMessageBox.question(
+            self, '', "Удалить вопросы на строках: " + ",".join(rows) + '?',
+            QMessageBox.Yes, QMessageBox.No)
+        rows = sorted(list(map(lambda x: int(x), rows)), reverse=True)
+        if answer == QMessageBox.Yes:
+            for row in rows:
+                self.testAddTable.removeRow(row - 1)
+
+    def saveTest(self):
+        con = sqlite3.connect('DBs/Tests_db.sqlite')
+        cur = con.cursor()
+        res = cur.execute("""SELECT MAX(id) FROM Tests""").fetchone()[0]
+        if res is None:
+            res = 1
+        else:
+            res += 1
+        f = open(f'tests/{res}.txt', mode='w', encoding='utf-8')
+        for i in range(self.testAddTable.rowCount()):
+            typeOfQuest = self.testAddTable.item(i, 0).text().lower()
+            question = self.testAddTable.item(i, 1).text()
+            correct = self.testAddTable.item(i, 3).text()
+            if typeOfQuest == 'выбор':
+                options = self.testAddTable.item(i, 2).text()
+                f.write(f'*{question} & {options}\n')
+            elif typeOfQuest == 'ответ':
+                f.write(f'#{question}\n')
+            f.write(f'{correct}\n')
+        f.write('END')
+        f.close()
+        name = self.testEdit.text()
+        cur.execute("""INSERT INTO Tests(testName, testLink)
+        VALUES(?, ?)""", (name, f'tests/{res}.txt'))
+        con.commit()
+        con.close()
+
+    def validTable(self):
+        for i in range(self.testAddTable.rowCount()):
+            typeOfQuest = self.testAddTable.item(i, 0).text().lower()
+            question = self.testAddTable.item(i, 1).text()
+            correct = self.testAddTable.item(i, 3).text().lower()
+            if not(correct):
+                return False
+            if not(question):
+                return False
+            if typeOfQuest == 'выбор':
+                options = self.testAddTable.item(i, 2).text().lower()
+                if correct not in options:
+                    return False
+                if ';' not in options:
+                    return False
+            elif typeOfQuest == 'ответ':
+                continue
+            else:
+                return False
+        return True

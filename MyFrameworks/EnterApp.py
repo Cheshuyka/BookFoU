@@ -47,6 +47,8 @@ class PasswordCheck(QDialog):  # проверка пользователя
                 self.w = UserInterface(login)  # открытие окна пользователя
                 self.w.show()
                 self.close()
+        except ValueError:
+            pass
         except Exception as e:
             self.w = ErrorDialog(e.__str__())
             self.w.show()

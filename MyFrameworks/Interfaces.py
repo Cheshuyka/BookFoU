@@ -78,7 +78,7 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
             wheres = ''
         con = sqlite3.connect("DBs/Tests_db.sqlite")  # получаем тесты из БД
         cur = con.cursor()
-        result = cur.execute(f"""SELECT * FROM Tests
+        result = cur.execute(f"""SELECT testName, testLink FROM Tests
                             {wheres}""").fetchall()
         con.close()
         for res in result:
@@ -196,7 +196,7 @@ class Test(QWidget):
         except AssertionError:
             pass
         try:
-            assert answer == self.key[1]
+            assert answer.lower() == self.key[1].lower()
             self.correct += 1
         except AssertionError:
             pass
@@ -225,6 +225,7 @@ class HostInterface(QMainWindow):  # интерфейс владельца
         self.addAuthorButton.clicked.connect(self.addAuthor)
         self.findUserButton.clicked.connect(self.findUsers)
         self.addEssayButton.clicked.connect(self.addEssay)
+        self.addTestButton.clicked.connect(self.addTest)
         self.findBooks()
         self.findAuthors()
         self.findUsers()
@@ -338,4 +339,8 @@ class HostInterface(QMainWindow):  # интерфейс владельца
 
     def addEssay(self):
         self.w = AddEssay()
+        self.w.show()
+
+    def addTest(self):
+        self.w = AddTest()
         self.w.show()
