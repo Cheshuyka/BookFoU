@@ -86,7 +86,7 @@ class WriteWindow(QWidget, WriteUI):  # окно для редактирован
 class ReadWindow(QWidget, TextUI):  # окно для открытия книги
     def __init__(self, text_name, file_name, id, login):
         super().__init__()
-        self.setupUi()
+        self.setupUi(self)
         self.login = login
         self.id = id
         self.text_name = text_name

@@ -33,9 +33,6 @@ class AddTestUI(object):
         self.testAddTable.horizontalHeader().setDefaultSectionSize(344)
         self.testAddTable.horizontalHeader().setStretchLastSection(False)
         self.tabWidget.addTab(self.tab, "")
-        self.tab_2 = QtWidgets.QWidget()
-        self.tab_2.setObjectName("tab_2")
-        self.tabWidget.addTab(self.tab_2, "")
 
         self.retranslateUi(Form)
         self.tabWidget.setCurrentIndex(0)
@@ -55,4 +52,3 @@ class AddTestUI(object):
         item = self.testAddTable.horizontalHeaderItem(3)
         item.setText(_translate("Form", "Правильный ответ"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Form", "AddTest"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("Form", "Instructions"))
