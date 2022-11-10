@@ -6,16 +6,19 @@ from MyFrameworks.ShowResult import Result
 from MyFrameworks.WorkWithDBs import *
 from MyFrameworks.HostWork import *
 import os
+from UIs.User import UserUI
+from UIs.Test import TestUI
+from UIs.Host import HostUI
 
 
 warnings.catch_warnings()
 warnings.simplefilter("ignore")
 
 
-class UserInterface(QMainWindow):  # интерфейс пользователя
+class UserInterface(QMainWindow, UserUI):  # интерфейс пользователя
     def __init__(self, login):
         super().__init__()
-        uic.loadUi('UIs/User.ui', self)
+        self.setupUi(self)
         self.wikiGet.clicked.connect(self.wiki)
         wikipedia.set_lang('ru')  # ставим язык для Википедии
         self.login = login
@@ -134,10 +137,10 @@ class UserInterface(QMainWindow):  # интерфейс пользователя
         self.w.show()
 
 
-class Test(QWidget):  # окно теста
+class Test(QWidget, TestUI):  # окно теста
     def __init__(self, file, login):
         super().__init__()
-        uic.loadUi('UIs/Test.ui', self)
+        self.setupUi(self)
         self.login = login
         self.file = file
         self.h = QVBoxLayout()
@@ -214,10 +217,10 @@ class Test(QWidget):  # окно теста
             self.show_test()
 
 
-class HostInterface(QMainWindow):  # интерфейс владельца
+class HostInterface(QMainWindow, HostUI):  # интерфейс владельца
     def __init__(self):
         super().__init__()
-        uic.loadUi('UIs/Host.ui', self)
+        self.setupUi(self)
         self.findBooksButton.clicked.connect(self.findBooks)
         self.addBookButton.clicked.connect(self.addBook)
         self.findAuthorButton.clicked.connect(self.findAuthors)

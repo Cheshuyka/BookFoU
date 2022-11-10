@@ -4,12 +4,16 @@ from MyFrameworks.Interfaces import UserInterface, HostInterface
 from MyFrameworks.Errors import *
 from backgrounds.enterBack import *
 import os
+from UIs.UserCheck import UserCheckUI
+from UIs.enter import EnterUI
+from UIs.UserAdd import UserAddUI
+from UIs.HostCheck import HostCheckUI
 
 
-class PasswordCheck(QDialog):  # проверка пользователя
+class PasswordCheck(QDialog, UserCheckUI):  # проверка пользователя
     def __init__(self, login):
         super().__init__()
-        uic.loadUi('UIs/UserCheck.ui', self)
+        self.setupUi(self)
         self.check_btn.clicked.connect(self.check)
         self.loginEdit.setText(login)
         self.delete_btn.clicked.connect(self.check)
@@ -59,10 +63,10 @@ class PasswordCheck(QDialog):  # проверка пользователя
         self.close()
 
 
-class Enter(QDialog):  # окно для входа в программу
+class Enter(QDialog, EnterUI):  # окно для входа в программу
     def __init__(self):
         super().__init__()
-        uic.loadUi('UIs/Enter.ui', self)
+        self.setupUi(self)
         self.AddUser.clicked.connect(self.add)
 
         self.groupBox = QGroupBox()  # создаем поле для вывода всех аккаунтов
@@ -94,10 +98,10 @@ class Enter(QDialog):  # окно для входа в программу
         self.w.show()
         self.close()
 
-class UserAdd(QDialog):  # окно добавления пользователя
+class UserAdd(QDialog, UserAddUI):  # окно добавления пользователя
     def __init__(self):
         super().__init__()
-        uic.loadUi('UIs/UserAdd.ui', self)
+        self.setupUi(self)
         self.check_btn.clicked.connect(self.add)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
@@ -145,10 +149,10 @@ class UserAdd(QDialog):  # окно добавления пользовател�
         self.close()
 
 
-class HostCheck(QDialog):  # проверка пользователя
+class HostCheck(QDialog, HostCheckUI):  # проверка пользователя
     def __init__(self):
         super().__init__()
-        uic.loadUi('UIs/HostCheck.ui', self)
+        self.setupUi(self)
         self.enterButton.clicked.connect(self.check)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)

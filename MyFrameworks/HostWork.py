@@ -6,12 +6,16 @@ import shutil
 import sqlite3
 from MyFrameworks.Errors import *
 from PyQt5.QtCore import Qt
+from UIs.AddEssay import AddEssayUI
+from UIs.AddBook import AddBookUI
+from UIs.AddAuthor import AddAuthorUI
+from UIs.AddTest import AddTestUI
 
 
-class AddBook(QWidget):  # интерфейс владельца
+class AddBook(QWidget, AddBookUI):  # интерфейс владельца
     def __init__(self):
         super().__init__()
-        uic.loadUi('UIs/AddBook.ui', self)
+        self.setupUi(self)
         self.chooseCover_btn.clicked.connect(self.chooseCover)
         self.chooseText_btn.clicked.connect(self.chooseText)
         self.workerFiles = WorkWithFiles()
@@ -76,10 +80,10 @@ class AddBook(QWidget):  # интерфейс владельца
             pass
 
 
-class AddAuthor(QWidget):  # интерфейс владельца
+class AddAuthor(QWidget, AddAuthorUI):  # интерфейс владельца
     def __init__(self):
         super().__init__()
-        uic.loadUi('UIs/AddAuthor.ui', self)
+        self.setupUi(self)
         self.addAuthorButton.clicked.connect(self.addAuthor)
 
     def addAuthor(self):  # добавление автора
@@ -104,10 +108,10 @@ class AddAuthor(QWidget):  # интерфейс владельца
             self.w.show()
 
 
-class AddEssay(QWidget):  # добавление сочинения
+class AddEssay(QWidget, AddEssayUI):  # добавление сочинения
     def __init__(self):
         super().__init__()
-        uic.loadUi('UIs/AddEssay.ui', self)
+        self.setupUi(self)
         self.openTextButton.clicked.connect(self.openFile)
         self.addTextButton.clicked.connect(self.addText)
         self.workerFiles = WorkWithFiles()
@@ -130,10 +134,10 @@ class AddEssay(QWidget):  # добавление сочинения
         self.close()
 
 
-class AddTest(QWidget):  # добавление теста
+class AddTest(QWidget, AddTestUI):  # добавление теста
     def __init__(self):
         super().__init__()
-        uic.loadUi('UIs/AddTest.ui', self)
+        self.setupUi(self)
         self.testAddTable.setRowCount(0)
         self.addQuestionButton.clicked.connect(self.addQuestion)
         self.testAddTable.resizeColumnToContents(1)

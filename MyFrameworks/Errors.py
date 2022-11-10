@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import QDialog
-from PyQt5 import uic
+from UIs.ErrorDialog import ErrorDialogUI
 
 
-class ErrorDialog(QDialog):  # окно ошибки
+class ErrorDialog(QDialog, ErrorDialogUI):  # окно ошибки
     def __init__(self, message):
         super().__init__()
-        uic.loadUi('UIs/ErrorDialog.ui', self)
+        self.setupUi(self)
         self.okButton.clicked.connect(self.close)
         self.error_lbl.setPlainText(message)

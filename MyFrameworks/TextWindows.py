@@ -1,6 +1,8 @@
-from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
 from MyFrameworks.WorkWithFiles import WorkWithFiles
+from UIs.ReadTask import ReadTaskUI
+from UIs.Write import WriteUI
+from UIs.Text import TextUI
 
 
 class WriteEssay():
@@ -11,10 +13,10 @@ class WriteEssay():
         self.read.show()
 
 
-class ReadTask(QWidget):  # окно для вывода задания для сочинения
+class ReadTask(QWidget, ReadTaskUI):  # окно для вывода задания для сочинения
     def __init__(self, login):
         super().__init__()
-        uic.loadUi('UIs/ReadTask.ui', self)
+        self.setupUi(self)
         self.save.clicked.connect(self.to_saveFile)
         self.workerFiles = WorkWithFiles()
         self.lastTheme.clicked.connect(self.changeTheme)
@@ -62,10 +64,10 @@ class ReadTask(QWidget):  # окно для вывода задания для �
         self.theme()
 
 
-class WriteWindow(QWidget):  # окно для редактирования заметок
+class WriteWindow(QWidget, WriteUI):  # окно для редактирования заметок
     def __init__(self):
         super().__init__()
-        uic.loadUi('UIs/WRITE.ui', self)
+        self.setupUi(self)
         self.workerFiles = WorkWithFiles()
         self.opening.clicked.connect(self.to_openFile)
         self.clear.clicked.connect(self.to_clearFile)
@@ -81,10 +83,10 @@ class WriteWindow(QWidget):  # окно для редактирования за
         self.workerFiles.SaveFiles(self.textEdit.toPlainText())
 
 
-class ReadWindow(QWidget):  # окно для открытия книги
+class ReadWindow(QWidget, TextUI):  # окно для открытия книги
     def __init__(self, text_name, file_name, id, login):
         super().__init__()
-        uic.loadUi('UIs/TEXT.ui', self)
+        self.setupUi()
         self.login = login
         self.id = id
         self.text_name = text_name
