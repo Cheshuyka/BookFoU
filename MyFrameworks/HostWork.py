@@ -64,6 +64,9 @@ class AddBook(QWidget):  # интерфейс владельца
         except sqlite3.IntegrityError:
             self.w = ErrorDialog('Такая книга уже существует')
             self.w.show()
+        except Exception as e:
+            self.w = ErrorDialog(e.__str__())
+            self.w.show()
 
     def chooseText(self):  # выбираем файл с текстом
         try:
